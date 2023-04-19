@@ -7,10 +7,12 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 
 @Getter
@@ -41,6 +43,7 @@ public class User {
   @Column(nullable = false)
   private LocalDateTime regDt;
 
+  @ColumnDefault("false")
   @Column(nullable = false)
   private boolean authYn;
 

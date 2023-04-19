@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>EyeTea Board</title>
+</head>
+<body>
+<h1>회원가입 페이지</h1>
+<form>
+  <div>
+    <label for="email">
+      이메일 : <input type="text" id="email" name="email" placeholder="abc@naver.com" required/>
+    </label>
+  </div>
+  <div>
+    <label for="password">
+      비밀번호 : <input type="password" id="password" name="password" required/>
+    </label>
+  </div>
+  <div>
+    <label for="name">
+      이름 : <input type="name" id="name" name="name" required>
+    </label>
+  </div>
+  <div>
+    <label for="birth">
+      생년월일 : <input type="text" id="birth" name="birth" placeholder="ex) 2000-02-02" required/>
+    </label>
+  </div>
+  <div>
+    <label for="address">
+      주소 : <input type="text" id="address" name="address" required readonly/>
+    </label>
+    <button type="button" id="btn-address">주소 찾기</button>
+  </div>
+  <div>
+    <label for="detailAddress">
+      <input type="text" id="detailAddress" name="detailAddress" placeholder="상세주소" required/>
+    </label>
+  </div>
+  <button type="button" id="btn-register">가입</button>
+</form>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+  var main = {
+    init: function () {
+      var _this = this;
+
+      $('#btn-register').on('click', function () {
+        _this.register();
+      });
+
+      $('#btn-address').on('click', function () {
+        _this.address();
+      });
+    },
+
+    register: function () {
+      var data = {
+        email: $('#email').val(),
+        password: $('#password').val(),
+        name: $('#name').val(),
+        birth: $('#birth').val(),
+        address: $('#address').val(),
+        detailAddress: $('#detailAddress').val()
+      };
+
+      $.ajax({
+        type: 'POST',
+        url: '/user/register',
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify(data)
+      }).done(function (res) {
+        alert(res.message);
+
+        location.href = '/';
+      }).fail(function (error) {
+        alert(JSON.stringify(error));
+      })
+    },
+
+    address: function () {
+
+      new daum.Postcode({
+        oncomplete: function (data) {
+
+          var addr = '';
+
+          if (data.userSelectedType === 'R') {
+            addr = data.roadAddress;
+          } else {
+            addr = data.jibunAddress;
+          }
+
+          document.getElementById('address').value = addr;
+          document.getElementById('detailAddress').focus();
+        }
+      }).open();
+    }
+  };
+
+  main.init();
+</script>
+</body>
+</html>

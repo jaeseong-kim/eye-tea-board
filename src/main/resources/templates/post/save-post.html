@@ -59,8 +59,7 @@
         data: JSON.stringify(data)
       }).done(function (res) {
         alert(res.message);
-
-        //게시글 리스트로 이동
+        location.href='/';
       }).fail(function (error) {
         alert(JSON.stringify(error));
       })

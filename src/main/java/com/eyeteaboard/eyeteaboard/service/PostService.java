@@ -1,13 +1,19 @@
 package com.eyeteaboard.eyeteaboard.service;
 
+import com.eyeteaboard.eyeteaboard.dto.PostListResDto;
+import com.eyeteaboard.eyeteaboard.dto.PostResDto;
 import com.eyeteaboard.eyeteaboard.dto.PostSaveReqDto;
 import com.eyeteaboard.eyeteaboard.dto.PostSaveResDto;
 import com.eyeteaboard.eyeteaboard.entity.Post;
 import com.eyeteaboard.eyeteaboard.entity.User;
 import com.eyeteaboard.eyeteaboard.repository.PostRepository;
 import com.eyeteaboard.eyeteaboard.repository.UserRepository;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -18,13 +24,19 @@ public class PostService {
   private final UserRepository userRepository;
 
   public PostSaveResDto postSave(PostSaveReqDto parameter, String email) {
+
     Optional<User> optionalUser = userRepository.findByEmail("doctorwho123@naver.com"); // 로그인 기능 이후에 수정
+    /*
+    스프링 시큐리티에서 사용자를 관리해주기 때문에 필요없지 않나?
+
     if (optionalUser.isEmpty() || !optionalUser.get().isAuthYn()) {
       return PostSaveResDto.builder()
                             .status(false)
                             .message("존재하지 않는 시용자입니다.")
                             .build();
     }
+
+     */
 
     Post post = parameter.toEntity(optionalUser.get());
 
@@ -35,5 +47,26 @@ public class PostService {
                           .status(true)
                           .message("글이 등록되었습니다.")
                           .build();
+  }
+
+  public List<PostListResDto> findAll() {
+    List<Post> postList = postRepository.findAll(Sort.by(Direction.DESC,"id"));
+
+    List<PostListResDto> postListResDtoList = new ArrayList<>();
+    for (int i = 0; i < postList.size(); i++) {
+      postListResDtoList.add(new PostListResDto(postList.get(i)));
+    }
+
+
+    return postListResDtoList;
+  }
+
+  public PostResDto findPost(Long id) {
+    Optional<Post> optionalPost = postRepository.findById(id);
+    if(optionalPost.isEmpty()){
+      //해당 게시글이 없습니다.
+    }
+
+    return new PostResDto(optionalPost.get());
   }
 }

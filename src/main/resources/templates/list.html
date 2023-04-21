@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>EyeTea Board</title>
+</head>
+<body>
+<h1>게시글 리스트 페이지</h1>
+<div>
+  <table>
+    <thead>
+      <tr>
+        <th>번호</th>
+        <th>제목</th>
+        <th>작성자</th>
+        <th>종아요 수</th>
+        <th>카테고리</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="postDto : ${list}">
+        <td th:text="${postDto.getId()}"></td>
+        <td>
+          <a th:href="@{/post/{id}(id=${postDto.getId()})}">
+            <span th:text="${postDto.getTitle()}"></span>
+          </a>
+        </td>
+        <td th:text="${postDto.getEmail()}"></td>
+        <td th:text="${postDto.getLikeNum()}"></td>
+        <td th:text="${postDto.getCategory().getValue()}"></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>

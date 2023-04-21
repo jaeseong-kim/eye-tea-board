@@ -1,5 +1,6 @@
 package com.eyeteaboard.eyeteaboard.service;
 
+import com.eyeteaboard.eyeteaboard.dto.PostDeleteResDto;
 import com.eyeteaboard.eyeteaboard.dto.PostListResDto;
 import com.eyeteaboard.eyeteaboard.dto.PostResDto;
 import com.eyeteaboard.eyeteaboard.dto.PostSaveReqDto;
@@ -90,6 +91,24 @@ public class PostService {
     return PostUpdateResDto.builder()
                             .status(true)
                             .message("게시글이 수정되었습니다.")
+                            .build();
+  }
+
+  @Transactional
+  public PostDeleteResDto delete(Long id) {
+    Optional<Post> optionalPost = postRepository.findById(id);
+    if(optionalPost.isEmpty()){
+      return PostDeleteResDto.builder()
+                              .status(false)
+                              .message("해당 게시글이 없습니다.")
+                              .build();
+    }
+
+    postRepository.delete(optionalPost.get());
+
+    return PostDeleteResDto.builder()
+                            .status(true)
+                            .message("게시글이 삭제되었습니다.")
                             .build();
   }
 }

@@ -1,6 +1,7 @@
 package com.eyeteaboard.eyeteaboard.entity;
 
 
+import com.eyeteaboard.eyeteaboard.dto.PostUpdateReqDto;
 import com.eyeteaboard.eyeteaboard.type.Category;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -50,5 +51,11 @@ public class Post extends BaseTimeEntity {
     this.content = content;
     this.likeNum = likeNum;
     this.category = category;
+  }
+
+  public void update(PostUpdateReqDto dto){
+    this.title = dto.getTitle();
+    this.category = Category.valueOf(dto.getCategory());
+    this.content = dto.getContent();
   }
 }

@@ -32,4 +32,11 @@ public class PostController {
 
     return "post/view-post";
   }
+
+  @GetMapping("/update/{id}")
+  public String updatePost(Model model,@PathVariable Long id){
+    model.addAttribute("post",postService.findPost(id));
+
+    return "post/update-post";
+  }
 }

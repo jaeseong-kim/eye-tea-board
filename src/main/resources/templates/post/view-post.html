@@ -18,5 +18,8 @@
   <div>
     좋아요 : <span th:text="${post.getLikeNum()}"></span>
   </div>
+  <div>
+    <a th:href="@{/post/update/{id}(id=${post.getId()})}">수정</a>
+  </div>
 </body>
 </html>

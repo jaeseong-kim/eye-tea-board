@@ -7,13 +7,16 @@ import lombok.Getter;
 
 @Getter
 public class PostResDto {
+
+  private Long id;
   private String title;
   private String content;
   private int likeNum;
 
   private Category category;
 
-  public PostResDto(Post entity){
+  public PostResDto(Post entity) {
+    this.id = entity.getId();
     this.title = entity.getTitle();
     this.content = entity.getContent();
     this.likeNum = entity.getLikeNum();

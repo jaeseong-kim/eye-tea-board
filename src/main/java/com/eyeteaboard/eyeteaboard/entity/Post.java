@@ -1,6 +1,7 @@
 package com.eyeteaboard.eyeteaboard.entity;
 
 
+import com.eyeteaboard.eyeteaboard.dto.PostUpdateReqDto;
 import com.eyeteaboard.eyeteaboard.type.Category;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,7 +28,7 @@ public class Post extends BaseTimeEntity {
 
   @ManyToOne // 유저 테이블(one) - 게시글 테이블(many), 게시글 테이블이 유저테이블의 개인키를 참조한다.
   @JoinColumn(name = "email")
-  private User email;
+  private User user;
 
   @Column(nullable = false)
   private String title;
@@ -45,10 +46,16 @@ public class Post extends BaseTimeEntity {
 
   @Builder
   public Post(User email, String title, String content, int likeNum, Category category) {
-    this.email = email;
+    this.user = email;
     this.title = title;
     this.content = content;
     this.likeNum = likeNum;
     this.category = category;
+  }
+
+  public void update(PostUpdateReqDto dto){
+    this.title = dto.getTitle();
+    this.category = Category.valueOf(dto.getCategory());
+    this.content = dto.getContent();
   }
 }

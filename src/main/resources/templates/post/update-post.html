@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>EyeTea Board</title>
+</head>
+<body>
+<h1>게시글 수정 페이지</h1>
+<form>
+  <div>
+    번호 : <input type="text" id="id" name="id" th:value="${post.getId()}" readonly>
+  </div>
+  <div>
+    제목 : <input type="text" id="title" name="title" th:value="${post.getTitle()}">
+  </div>
+  <div>
+    분류 :
+    <label for="knowledge">
+      지식 <input type="radio" id="knowledge" name="category" value="KNOWLEDGE"
+                th:checked="${post.getCategory().getValue() eq 'KNOWLEDGE'}">
+    </label>
+    <label for="daily_life">
+      사는 이야기 <input type="radio" id="daily_life" name="category" value="DAILY_LIFE"
+                    th:checked="${post.getCategory().getValue() eq 'DAILY_LIFE'}">
+    </label>
+    <label for="study">
+      스터디 <input type="radio" id="study" name="category" value="STUDY"
+                 th:checked="${post.getCategory().getValue() eq 'STUDY'}">
+    </label>
+  </div>
+  <div>
+    내용 : <input type="text" id="content" name="content" th:value="${post.getContent()}">
+  </div>
+  <button type="button" id="btn-update">확인</button>
+  <button type="button" id="btn-delete">삭제</button>
+</form>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+  var main = {
+    init: function () {
+      var _this = this;
+
+      $('#btn-update').on('click', function () {
+        _this.update();
+      });
+
+      $('#btn-delete').on('click', function () {
+        _this.delete();
+      });
+
+    },
+
+    update: function () {
+      var data = {
+        title: $('#title').val(),
+        category: $('input[type=radio][name=category]:checked').val(),
+        content: $('#content').val()
+      };
+
+      var id = $('#id').val();
+
+      $.ajax({
+        type: 'PUT',
+        url: '/post/update/' + id,
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify(data)
+      }).done(function (res) {
+        alert(res.message);
+
+        location.href = '/post/list'
+      }).fail(function (error) {
+        JSON.stringify(error);
+      })
+    },
+
+    delete: function () {
+      var id = $('#id').val();
+
+      $.ajax({
+        type: 'DELETE',
+        url: '/post/delete/' + id,
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8',
+      }).done(function (res) {
+        alert(res.message);
+        location.href = '/post/list'
+      }).fail(function (error) {
+        JSON.stringify(error);
+      })
+    }
+  };
+
+  main.init();
+</script>
+</body>
+</html>

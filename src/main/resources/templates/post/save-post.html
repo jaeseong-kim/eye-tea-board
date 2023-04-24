@@ -59,7 +59,7 @@
         data: JSON.stringify(data)
       }).done(function (res) {
         alert(res.message);
-        location.href='/';
+        location.href='/post/list';
       }).fail(function (error) {
         alert(JSON.stringify(error));
       })

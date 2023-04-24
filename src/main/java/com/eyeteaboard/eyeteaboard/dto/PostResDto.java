@@ -16,7 +16,7 @@ public class PostResDto {
   private Category category;
 
   public PostResDto(Post entity) {
-    this.id = entity.getId();
+    this.id = entity.getPostId();
     this.title = entity.getTitle();
     this.content = entity.getContent();
     this.likeNum = entity.getLikeNum();

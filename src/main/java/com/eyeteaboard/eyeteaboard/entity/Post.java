@@ -24,7 +24,7 @@ public class Post extends BaseTimeEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  private Long postId;
 
   @ManyToOne // 유저 테이블(one) - 게시글 테이블(many), 게시글 테이블이 유저테이블의 개인키를 참조한다.
   @JoinColumn(name = "email")
@@ -57,5 +57,9 @@ public class Post extends BaseTimeEntity {
     this.title = dto.getTitle();
     this.category = Category.valueOf(dto.getCategory());
     this.content = dto.getContent();
+  }
+
+  public void updateLikeNum(int likeNum){
+    this.likeNum = likeNum;
   }
 }

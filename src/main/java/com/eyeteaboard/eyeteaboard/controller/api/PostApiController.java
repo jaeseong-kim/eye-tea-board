@@ -1,6 +1,7 @@
 package com.eyeteaboard.eyeteaboard.controller.api;
 
 import com.eyeteaboard.eyeteaboard.dto.PostDeleteResDto;
+import com.eyeteaboard.eyeteaboard.dto.PostLikeResDto;
 import com.eyeteaboard.eyeteaboard.dto.PostSaveReqDto;
 import com.eyeteaboard.eyeteaboard.dto.PostSaveResDto;
 import com.eyeteaboard.eyeteaboard.dto.PostUpdateReqDto;
@@ -31,13 +32,22 @@ public class PostApiController {
     return postService.postSave(parameter, email);
   }
 
+  @PostMapping("/like/{id}")
+  public PostLikeResDto clickPostLike(@PathVariable Long id, Principal principal) {
+    //해당 유저 가져오기
+    //String email = principal.getName();
+    PostLikeResDto postLikeResDto = postService.clickPostLike(id, "doctorwho123@naver.com");
+    return postLikeResDto;
+  }
+
   @PutMapping("/update/{id}")
-  public PostUpdateResDto updatePost(@PathVariable Long id, @RequestBody PostUpdateReqDto parameter){
-    return postService.update(id,parameter);
+  public PostUpdateResDto updatePost(@PathVariable Long id,
+      @RequestBody PostUpdateReqDto parameter) {
+    return postService.update(id, parameter);
   }
 
   @DeleteMapping("/delete/{id}")
-  public PostDeleteResDto deletePost(@PathVariable Long id){
+  public PostDeleteResDto deletePost(@PathVariable Long id) {
     return postService.delete(id);
   }
 }

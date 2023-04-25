@@ -29,17 +29,42 @@
     <button type="button" id="btn-like" th:value="${post.getId()}">좋아요</button>
   </form>
 </div>
+<div>
+  댓글
+  <table>
+    <tbody>
+    <tr th:each="comment : ${comments}">
+      <td th:text="${comment.getComment()}"></td>
+      <td th:text="${comment.getWriter()}"></td>
+      <td th:text="${comment.getLikeNum()}"></td>
+      <td th:text="${comment.getRegDt()}"></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<div>
+  댓글 작성
+  <form>
+    <input type="text" id="comment" name="comment">
+    <input type="hidden" id="post-id" name="post-id" th:value="${post.getId()}">
+    <button type="button" id="btn-comment">등록</button>
+  </form>
+</div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
   var main = {
     init: function () {
       var _this = this;
-      $('#btn-like').on('click',function (){
-        _this.like();
+      $('#btn-like').on('click', function () {
+        _this.postLike();
+      });
+
+      $('#btn-comment').on('click', function () {
+        _this.comment();
       });
     },
 
-    like: function () {
+    postLike: function () {
 
       var postId = $('#btn-like').val();
 
@@ -52,8 +77,28 @@
         if (res.status) {
           alert(res.message);
           $('#likeNum').text(res.likeNum);
-        }else{
+        } else {
           alert(res.message);
+        }
+      })
+    },
+
+    comment: function () {
+      var data = {
+        postId: $('#post-id').val(),
+        comment: $('#comment').val()
+      };
+
+      $.ajax({
+        type: 'POST',
+        url: '/post/comment',
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify(data)
+      }).done(function (res) {
+        if(res.status){
+          alert(res.message);
+          location.reload();
         }
       })
     }

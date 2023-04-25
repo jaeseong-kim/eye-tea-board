@@ -1,11 +1,14 @@
 package com.eyeteaboard.eyeteaboard.controller.api;
 
+import com.eyeteaboard.eyeteaboard.dto.CommentSaveReqDto;
+import com.eyeteaboard.eyeteaboard.dto.CommentSaveResDto;
 import com.eyeteaboard.eyeteaboard.dto.PostDeleteResDto;
 import com.eyeteaboard.eyeteaboard.dto.PostLikeResDto;
 import com.eyeteaboard.eyeteaboard.dto.PostSaveReqDto;
 import com.eyeteaboard.eyeteaboard.dto.PostSaveResDto;
 import com.eyeteaboard.eyeteaboard.dto.PostUpdateReqDto;
 import com.eyeteaboard.eyeteaboard.dto.PostUpdateResDto;
+import com.eyeteaboard.eyeteaboard.service.CommentService;
 import com.eyeteaboard.eyeteaboard.service.PostService;
 import java.security.Principal;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PostApiController {
 
   private final PostService postService;
+  private final CommentService commentService;
 
   @PostMapping("/save")
   public PostSaveResDto postSave(@RequestBody PostSaveReqDto parameter, Principal principal) {
@@ -50,4 +54,12 @@ public class PostApiController {
   public PostDeleteResDto deletePost(@PathVariable Long id) {
     return postService.delete(id);
   }
+
+  @PostMapping("/comment")
+  public CommentSaveResDto saveComment(@RequestBody CommentSaveReqDto dto, Principal principal) {
+
+    //String writer = principal.getName();
+    return commentService.saveComment(dto, "doctorwho123@naver.com");
+  }
+
 }

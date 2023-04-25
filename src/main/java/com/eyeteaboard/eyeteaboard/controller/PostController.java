@@ -1,5 +1,6 @@
 package com.eyeteaboard.eyeteaboard.controller;
 
+import com.eyeteaboard.eyeteaboard.service.CommentService;
 import com.eyeteaboard.eyeteaboard.service.PostService;
 import com.eyeteaboard.eyeteaboard.type.Category;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class PostController {
 
   private final PostService postService;
+
+  private final CommentService commentService;
 
   @GetMapping("/save")
   public String postSave() {
@@ -39,7 +42,7 @@ public class PostController {
   @GetMapping("/{id}")
   public String viewPost(Model model, @PathVariable Long id) {
     model.addAttribute("post", postService.findPost(id));
-
+    model.addAttribute("comments", commentService.findCommentList(id));
     return "post/view-post";
   }
 

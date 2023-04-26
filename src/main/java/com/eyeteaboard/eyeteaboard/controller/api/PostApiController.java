@@ -55,11 +55,5 @@ public class PostApiController {
     return postService.delete(id);
   }
 
-  @PostMapping("/comment")
-  public CommentSaveResDto saveComment(@RequestBody CommentSaveReqDto dto, Principal principal) {
-
-    //String writer = principal.getName();
-    return commentService.saveComment(dto, "doctorwho123@naver.com");
-  }
 
 }

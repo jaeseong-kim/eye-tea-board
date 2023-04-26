@@ -1,5 +1,6 @@
 package com.eyeteaboard.eyeteaboard.service;
 
+import com.eyeteaboard.eyeteaboard.dto.CommentDelResDto;
 import com.eyeteaboard.eyeteaboard.dto.CommentResDto;
 import com.eyeteaboard.eyeteaboard.dto.CommentSaveReqDto;
 import com.eyeteaboard.eyeteaboard.dto.CommentSaveResDto;
@@ -67,4 +68,17 @@ public class CommentService {
                             .build();
   }
 
+  public CommentDelResDto deleteComment(Long commentId) {
+    Optional<Comment> optionalComment = commentRepository.findById(commentId);
+    if (optionalComment.isEmpty()) {
+      //해당 댓글이 없음
+    }
+
+    commentRepository.delete(optionalComment.get());
+
+    return CommentDelResDto.builder()
+                           .status(true)
+                           .message("댓글이 삭제되었습니다.")
+                           .build();
+  }
 }

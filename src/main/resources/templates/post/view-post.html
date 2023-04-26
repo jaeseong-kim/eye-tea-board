@@ -38,6 +38,9 @@
       <td th:text="${comment.getWriter()}"></td>
       <td th:text="${comment.getLikeNum()}"></td>
       <td th:text="${comment.getRegDt()}"></td>
+      <td>
+        <button type="button" id="btn-comment-del" th:value="${comment.getCommentId()}">삭제</button>
+      </td>
     </tr>
     </tbody>
   </table>
@@ -61,6 +64,10 @@
 
       $('#btn-comment').on('click', function () {
         _this.comment();
+      });
+
+      $('#btn-comment-del').on('click', function () {
+        _this.commentDel();
       });
     },
 
@@ -91,12 +98,29 @@
 
       $.ajax({
         type: 'POST',
-        url: '/post/comment',
+        url: '/comment/save',
         dataType: 'json',
         contentType: 'application/json; charset=utf-8',
         data: JSON.stringify(data)
       }).done(function (res) {
-        if(res.status){
+        if (res.status) {
+          alert(res.message);
+          location.reload();
+        }
+      })
+    },
+
+    commentDel: function () {
+      var commentId = $('#btn-comment-del').val();
+
+      $.ajax({
+        type: 'DELETE',
+        url: '/comment/delete/' + commentId,
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8'
+      }).done(function (res) {
+
+        if (res.status) {
           alert(res.message);
           location.reload();
         }

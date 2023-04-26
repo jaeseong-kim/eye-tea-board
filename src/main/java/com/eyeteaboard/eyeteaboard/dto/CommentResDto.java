@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 public class CommentResDto {
 
+  private Long commentId;
   private Long postId;
 
   private String writer;
@@ -18,6 +19,7 @@ public class CommentResDto {
   private LocalDateTime regDt;
 
   public CommentResDto(Comment entity) {
+    this.commentId = entity.getCommentId();
     this.postId = entity.getPostId().getPostId();
     this.writer = entity.getWriter().getEmail();
     this.comment = entity.getComment();

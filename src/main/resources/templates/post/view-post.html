@@ -29,17 +29,58 @@
     <button type="button" id="btn-like" th:value="${post.getId()}">좋아요</button>
   </form>
 </div>
+<div>
+  댓글
+  <table>
+    <tbody>
+    <tr th:each="comment : ${comments}">
+      <td th:text="${comment.getComment()}"></td>
+      <td th:text="${comment.getWriter()}"></td>
+      <td id="comment-like" th:text="${comment.getLikeNum()}"></td>
+      <td th:text="${comment.getRegDt()}"></td>
+      <td>
+        <button type="button" id="btn-comment-like" th:value="${comment.getCommentId()}">
+          <img src="/img/commnet-like.png" width="12" height="12">
+        </button>
+      </td>
+      <td>
+        <button type="button" id="btn-comment-del" th:value="${comment.getCommentId()}">삭제</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<div>
+  댓글 작성
+  <form>
+    <input type="text" id="comment" name="comment">
+    <input type="hidden" id="post-id" name="post-id" th:value="${post.getId()}">
+    <button type="button" id="btn-comment">등록</button>
+  </form>
+</div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
   var main = {
     init: function () {
       var _this = this;
-      $('#btn-like').on('click',function (){
-        _this.like();
+      $('#btn-like').on('click', function () {
+        _this.postLike();
       });
+
+      $('#btn-comment').on('click', function () {
+        _this.comment();
+      });
+
+      $('#btn-comment-del').on('click', function () {
+        _this.commentDel();
+      });
+
+      $('#btn-comment-like').on('click', function () {
+        _this.commentLike();
+      })
     },
 
-    like: function () {
+    postLike: function () {
 
       var postId = $('#btn-like').val();
 
@@ -52,8 +93,61 @@
         if (res.status) {
           alert(res.message);
           $('#likeNum').text(res.likeNum);
-        }else{
+        } else {
           alert(res.message);
+        }
+      })
+    },
+
+    comment: function () {
+      var data = {
+        postId: $('#post-id').val(),
+        comment: $('#comment').val()
+      };
+
+      $.ajax({
+        type: 'POST',
+        url: '/comment/save',
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify(data)
+      }).done(function (res) {
+        if (res.status) {
+          alert(res.message);
+          location.reload();
+        }
+      })
+    },
+
+    commentDel: function () {
+      var commentId = $('#btn-comment-del').val();
+
+      $.ajax({
+        type: 'DELETE',
+        url: '/comment/delete/' + commentId,
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8'
+      }).done(function (res) {
+
+        if (res.status) {
+          alert(res.message);
+          location.reload();
+        }
+      })
+    },
+
+    commentLike: function () {
+      var commentId = $('#btn-comment-like').val();
+
+      $.ajax({
+        type: 'POST',
+        url: '/comment/like/' + commentId,
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8'
+      }).done(function (res) {
+        if(res.status){
+          alert(res.message);
+          $('#comment-like').text(res.likeNum);
         }
       })
     }

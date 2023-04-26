@@ -36,8 +36,13 @@
     <tr th:each="comment : ${comments}">
       <td th:text="${comment.getComment()}"></td>
       <td th:text="${comment.getWriter()}"></td>
-      <td th:text="${comment.getLikeNum()}"></td>
+      <td id="comment-like" th:text="${comment.getLikeNum()}"></td>
       <td th:text="${comment.getRegDt()}"></td>
+      <td>
+        <button type="button" id="btn-comment-like" th:value="${comment.getCommentId()}">
+          <img src="/img/commnet-like.png" width="12" height="12">
+        </button>
+      </td>
       <td>
         <button type="button" id="btn-comment-del" th:value="${comment.getCommentId()}">삭제</button>
       </td>
@@ -69,6 +74,10 @@
       $('#btn-comment-del').on('click', function () {
         _this.commentDel();
       });
+
+      $('#btn-comment-like').on('click', function () {
+        _this.commentLike();
+      })
     },
 
     postLike: function () {
@@ -123,6 +132,22 @@
         if (res.status) {
           alert(res.message);
           location.reload();
+        }
+      })
+    },
+
+    commentLike: function () {
+      var commentId = $('#btn-comment-like').val();
+
+      $.ajax({
+        type: 'POST',
+        url: '/comment/like/' + commentId,
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8'
+      }).done(function (res) {
+        if(res.status){
+          alert(res.message);
+          $('#comment-like').text(res.likeNum);
         }
       })
     }

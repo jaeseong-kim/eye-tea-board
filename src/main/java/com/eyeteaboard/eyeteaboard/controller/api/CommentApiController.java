@@ -1,6 +1,7 @@
 package com.eyeteaboard.eyeteaboard.controller.api;
 
 import com.eyeteaboard.eyeteaboard.dto.CommentDelResDto;
+import com.eyeteaboard.eyeteaboard.dto.CommentLikeResDto;
 import com.eyeteaboard.eyeteaboard.dto.CommentSaveReqDto;
 import com.eyeteaboard.eyeteaboard.dto.CommentSaveResDto;
 import com.eyeteaboard.eyeteaboard.service.CommentService;
@@ -28,7 +29,13 @@ public class CommentApiController {
   }
 
   @DeleteMapping("/delete/{commentId}")
-  public CommentDelResDto deleteComment(@PathVariable Long commentId){
+  public CommentDelResDto deleteComment(@PathVariable Long commentId) {
     return commentService.deleteComment(commentId);
+  }
+
+  @PostMapping("/like/{commentId}")
+  public CommentLikeResDto clickCommentLike(@PathVariable Long commentId, Principal principal) {
+    //String clicker = principal.getName();
+    return commentService.clickCommentLike(commentId, "doctorwho123@naver.com");
   }
 }

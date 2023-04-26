@@ -46,4 +46,7 @@ public class Comment extends BaseTimeEntity {
   }
 
 
+  public void updateLikeNum(int likeNum){
+    this.likeNum = likeNum;
+  }
 }

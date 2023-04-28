@@ -73,9 +73,14 @@
         contentType: 'application/json; charset=utf-8',
         data: JSON.stringify(data)
       }).done(function (res) {
-        alert(res.message);
 
-        location.href = '/';
+        if (res.status) {
+          alert(res.message);
+          location.href = '/';
+        } else {
+          alert(res.message);
+        }
+
       }).fail(function (error) {
         alert(JSON.stringify(error));
       })

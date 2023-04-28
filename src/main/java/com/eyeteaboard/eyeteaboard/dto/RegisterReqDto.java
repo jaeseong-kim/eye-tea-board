@@ -44,4 +44,12 @@ public class RegisterReqDto {
                 .role(Role.USER)
                 .build();
   }
+
+  public void insertAuthKey(String uuid){
+    this.uuid = uuid;
+  }
+
+  public void encodePassword(String password){
+    this.password = password;
+  }
 }

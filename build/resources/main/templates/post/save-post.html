@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>EyeTea Board</title>
+</head>
+<body>
+<h1>게시글 작성 페이지</h1>
+<div>
+  <form>
+    <div>
+      <label for="title">
+        제목 : <input type="text" id="title" name="title"/>
+      </label>
+    </div>
+    <div>
+      분류 :
+      <label for="knowledge">
+        지식 <input type="radio" id="knowledge" name="category" value="KNOWLEDGE" checked>
+      </label>
+      <label for="daily_life">
+        사는 이야기 <input type="radio" id="daily_life" name="category" value="DAILY_LIFE">
+      </label>
+      <label for="study">
+        스터디 <input type="radio" id="study" name="category" value="STUDY">
+      </label>
+    </div>
+    <div>
+      <label for="content">
+        내용 : <input type="text" id="content" name="content"/>
+      </label>
+    </div>
+    <button type="button" id="btn-save">등록</button>
+  </form>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+  var main = {
+    init: function () {
+      var _this = this;
+
+      $('#btn-save').on('click', function () {
+        _this.save();
+      })
+    },
+
+    save: function () {
+      var data = {
+        title: $('#title').val(),
+        category: $('input[type=radio][name=category]:checked').val(),
+        content: $('#content').val()
+      };
+
+      $.ajax({
+        type: 'POST',
+        url: '/post/save',
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify(data)
+      }).done(function (res) {
+        alert(res.message);
+        location.href='/post/list';
+      }).fail(function (error) {
+        alert(JSON.stringify(error));
+      })
+    }
+  }
+
+  main.init();
+</script>
+</body>
+</html>

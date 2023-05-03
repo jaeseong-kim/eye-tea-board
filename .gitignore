@@ -3,3 +3,4 @@
 .gradle
 
 application-mail.properties
+application-oauth.properties

@@ -2,6 +2,8 @@ package com.eyeteaboard.eyeteaboard.service;
 
 import com.eyeteaboard.eyeteaboard.config.CustomUserDetails;
 import com.eyeteaboard.eyeteaboard.dto.AuthResDto;
+import com.eyeteaboard.eyeteaboard.dto.OAuthRegisterReqDto;
+import com.eyeteaboard.eyeteaboard.dto.OAuthRegisterResDto;
 import com.eyeteaboard.eyeteaboard.dto.RegisterReqDto;
 import com.eyeteaboard.eyeteaboard.dto.RegisterResDto;
 import com.eyeteaboard.eyeteaboard.entity.User;
@@ -59,12 +61,12 @@ public class UserService implements UserDetailsService {
       MimeMessageHelper msgHelper = new MimeMessageHelper(msg, "UTF-8");
 
       String text = "<html>"
-                  + "<head>"
-                  + "</head>"
-                  + "<body>"
-                  + "<a href=http://localhost:8080/user/auth/" + uuid + ">인증하기</a>"
-                  + "</body>"
-                  + "</html>";
+          + "<head>"
+          + "</head>"
+          + "<body>"
+          + "<a href=http://localhost:8080/user/auth/" + uuid + ">인증하기</a>"
+          + "</body>"
+          + "</html>";
 
       msgHelper.setFrom("thecastleexists@gmail.com");
       msgHelper.setTo(parameter.getEmail());
@@ -108,6 +110,27 @@ public class UserService implements UserDetailsService {
                      .status(true)
                      .message("인증이 완료되었습니다.")
                      .build();
+  }
+
+
+  @Transactional
+  public OAuthRegisterResDto oauthRegister(OAuthRegisterReqDto parameter) {
+    Optional<User> optionalUser = userRepository.findByEmail(parameter.getEmail());
+    if (optionalUser.isEmpty()) {
+      return OAuthRegisterResDto.builder()
+                                .status(false)
+                                .message("해당 유저가 없습니다.")
+                                .build();
+    }
+
+    User user = optionalUser.get();
+
+    user.registerOAuthGuest(parameter);
+
+    return OAuthRegisterResDto.builder()
+                              .status(true)
+                              .message("회원가입이 완료되었습니다.")
+                              .build();
   }
 
   @Override

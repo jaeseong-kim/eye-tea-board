@@ -4,6 +4,7 @@ import java.security.Principal;
 import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,15 +15,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class IndexController {
 
-  private final HttpSession httpSession;
-
   @GetMapping("/")
-  public String index(Model model) {
+  public String index() {
 
     return "index";
   }
 
-  @GetMapping("/login")
+  @GetMapping("/justlogin")
   public String login(Model model,
       @RequestParam(name = "error", required = false) boolean error,
       @RequestParam(name = "exception", required = false) String exception) {

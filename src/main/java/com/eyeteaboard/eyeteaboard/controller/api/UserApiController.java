@@ -1,5 +1,7 @@
 package com.eyeteaboard.eyeteaboard.controller.api;
 
+import com.eyeteaboard.eyeteaboard.dto.OAuthRegisterReqDto;
+import com.eyeteaboard.eyeteaboard.dto.OAuthRegisterResDto;
 import com.eyeteaboard.eyeteaboard.dto.RegisterReqDto;
 import com.eyeteaboard.eyeteaboard.dto.RegisterResDto;
 import com.eyeteaboard.eyeteaboard.service.UserService;
@@ -17,6 +19,11 @@ public class UserApiController {
   @PostMapping("/user/register")
   public RegisterResDto register(@RequestBody RegisterReqDto parameter) {
     return userService.register(parameter);
+  }
+
+  @PostMapping("/user/oauth-register")
+  public OAuthRegisterResDto oauthRegister(@RequestBody OAuthRegisterReqDto parameter){
+    return userService.oauthRegister(parameter);
   }
 
 }

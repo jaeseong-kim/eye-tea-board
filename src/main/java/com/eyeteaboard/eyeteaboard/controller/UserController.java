@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -19,6 +20,15 @@ public class UserController {
   public String register() {
     return "user/register";
   }
+
+  @GetMapping("/user/oauth-register")
+  public String oauthRegister(Model model,@RequestParam String email){
+
+    model.addAttribute("email",email);
+
+    return "user/oauth-register";
+  }
+
 
   @GetMapping("/user/auth/{authKey}")
   public String emailAuth(Model model, @PathVariable(value = "authKey") String authKey) {

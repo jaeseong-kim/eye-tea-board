@@ -3,35 +3,53 @@
 <head>
   <meta charset="UTF-8">
   <title>EyeTea Board</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+        crossorigin="anonymous">
 </head>
 <body>
-<h1>추가 정보 입력 페이지</h1>
+<nav class="navbar bg-light">
+  <div class="container-fluid">
+    <a href="/" class="navbar-brand">EyeTea Board</a>
+  </div>
+</nav>
 
-<form>
-  <div>
-    <label for="email">
-      이메일 : <input type="text" th:value="${email}" id="email" name="email" required readonly/>
-    </label>
+<div class="container m-3">
+  <div class="d-flex justify-content-center">
+    <form>
+      <h1>
+        간편 로그인 추가정보
+      </h1>
+      <div class="form-floating mb-3">
+        <input type="email" class="form-control" th:value="${email}" id="email" name="email" required
+               readonly disabled/>
+        <label for="email">Email</label>
+      </div>
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control" id="birth" name="birth" placeholder="ex)2000-02-02"
+               required/>
+        <label for="birth">Birth ex)2023-01-01</label>
+      </div>
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control" id="address" name="address" placeholder="주소"
+               required readonly/>
+        <label for="address">Address</label>
+        <button type="button" class="btn btn-light mt-2" id="btn-oauth-address">주소 찾기</button>
+      </div>
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control" id="detailAddress" name="detailAddress"
+               placeholder="상세주소" required/>
+        <label for="detailAddress">DetailAddress</label>
+      </div>
+      <button type="button" class="btn btn-primary" id="btn-oauth-register">가입</button>
+    </form>
   </div>
-  <div>
-    <label for="birth">
-      생년월일 : <input type="text" id="birth" name="birth" placeholder="ex) 2000-02-02" required/>
-    </label>
-  </div>
-  <div>
-    <label for="address">
-      주소 : <input type="text" id="address" name="address" required readonly/>
-    </label>
-    <button type="button" id="btn-oauth-address">주소 찾기</button>
-  </div>
-  <div>
-    <label for="detailAddress">
-      <input type="text" id="detailAddress" name="detailAddress" placeholder="상세주소" required/>
-    </label>
-  </div>
-  <button type="button" id="btn-oauth-register">가입</button>
-</form>
+</div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"></script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
@@ -50,7 +68,7 @@
 
     oauthRegister: function () {
       var data = {
-        email : $('#email').val(),
+        email: $('#email').val(),
         birth: $('#birth').val(),
         address: $('#address').val(),
         detailAddress: $('#detailAddress').val()
@@ -62,12 +80,12 @@
         dataType: 'json',
         contentType: 'application/json; charset=utf-8',
         data: JSON.stringify(data)
-      }).done(function(res){
+      }).done(function (res) {
 
-        if(res.status){
+        if (res.status) {
           alert(res.message);
-          location.href='/';
-        }else{
+          location.href = '/logout';
+        } else {
           alert(res.message);
         }
 

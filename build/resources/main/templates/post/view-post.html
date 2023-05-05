@@ -1,63 +1,111 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
   <meta charset="UTF-8">
   <title>EyeTea Board</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+        crossorigin="anonymous">
 </head>
 <body>
-<h1>상세 게시판 페이지</h1>
+<nav class="navbar bg-light">
+  <div class="container-fluid">
+    <a href="/" class="navbar-brand">EyeTea Board</a>
+    <div sec:authorize="isAuthenticated()">
+      <span sec:authentication="name"></span>
+      <a href="/logout" class="btn btn-dark" role="button">로그아웃</a>
+    </div>
+  </div>
+</nav>
+
 <div>
-  <a href="/post/list">목록으로 돌아가기</a>
+  <a href="/post/list">목록</a>
 </div>
-<div>
-  제목 : <span th:text="${post.getTitle()}"></span>
-</div>
-<div>
-  <span th:text="${post.getContent()}"></span>
-</div>
-<div>
-  카테고리 : <span th:text="${post.getCategory().getValue()}"></span>
-</div>
-<div>
-  좋아요 : <span id="likeNum" th:text="${post.getLikeNum()}"></span>
-</div>
-<div>
-  <a th:href="@{/post/update/{id}(id=${post.getId()})}">수정</a>
-</div>
-<div>
-  <form>
-    <button type="button" id="btn-like" th:value="${post.getId()}">좋아요</button>
-  </form>
-</div>
-<div>
-  댓글
-  <table>
-    <tbody>
-    <tr th:each="comment : ${comments}">
-      <td th:text="${comment.getComment()}"></td>
-      <td th:text="${comment.getWriter()}"></td>
-      <td id="comment-like" th:text="${comment.getLikeNum()}"></td>
-      <td th:text="${comment.getRegDt()}"></td>
-      <td>
-        <button type="button" id="btn-comment-like" th:value="${comment.getCommentId()}">
-          <img src="/img/commnet-like.png" width="12" height="12">
+<div class="container bg-light">
+  <div class="row">
+    <div class="col-md-8">
+      제목 : <span th:text="${post.getTitle()}"></span>
+    </div>
+    <div class="col-md-4">
+      작성자 <span th:text="${post.getWriter()}"></span>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      카테고리 : <span th:text="${post.getCategory().getValue()}"></span>
+    </div>
+    <div class="col-md-6">
+      좋아요 : <span id="likeNum" th:text="${post.getLikeNum()}"></span>
+    </div>
+  </div>
+  <div class="bg-white" rows="10">
+    <span th:text="${post.getContent()}">텍스트내용</span>
+  </div>
+  <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+    <div th:if="${post.getWriter()} eq ${#authentication.name}" class="me-md-2">
+      <a th:href="@{/post/update/{id}(id=${post.getId()})}" class="btn btn-secondary btn-sm"
+         role="button">수정</a>
+    </div>
+    <div>
+      <form>
+        <button type="button" class="btn btn-primary btn-sm" id="btn-like"
+                th:value="${post.getId()}">좋아요
         </button>
-      </td>
-      <td>
-        <button type="button" id="btn-comment-del" th:value="${comment.getCommentId()}">삭제</button>
-      </td>
-    </tr>
-    </tbody>
-  </table>
+      </form>
+    </div>
+  </div>
 </div>
-<div>
-  댓글 작성
-  <form>
-    <input type="text" id="comment" name="comment">
-    <input type="hidden" id="post-id" name="post-id" th:value="${post.getId()}">
-    <button type="button" id="btn-comment">등록</button>
-  </form>
+<div class="container">
+  <hr>
+  <div>
+    댓글
+    <table>
+      <thead>
+      <tr>
+        <th scope="col" style="width:10%;"></th>
+        <th scope="col" style="width:10%;"></th>
+        <th scope="col" style="width:10%;"></th>
+        <th scope="col" style="width:50%;"></th>
+        <th scope="col" style="width:10%;"></th>
+        <th scope="col" style="width:10%;"></th>
+      </tr>
+      </thead>
+      <tbody class="text-center">
+      <tr th:each="comment : ${comments}">
+        <td th:text="${comment.getWriter()}"></td>
+        <td id="comment-like" th:text="${comment.getLikeNum()}"></td>
+        <td th:text="${comment.getRegDt()}"></td>
+        <td th:text="${comment.getComment()}"></td>
+        <td>
+          <button type="button" class="btn btn-light btn-sm" id="btn-comment-like"
+                  th:value="${comment.getCommentId()}">
+            <img src="/img/commnet-like.png" width="12" height="12">
+          </button>
+        </td>
+        <td>
+          <button type="button" class="btn btn-danger btn-sm" id="btn-comment-del"
+                  th:if="${comment.getWriter()} eq ${#authentication.name}" th:value="${comment.getCommentId()}">삭제
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="mt-2">
+    <form>
+      <input type="hidden" id="post-id" name="post-id" th:value="${post.getId()}">
+      <div class="input-group mb-3">
+        <input type="text" class="form-control" id="comment" name="comment">
+        <button type="button" class="btn btn-outline-secondary" id="btn-comment">등록</button>
+      </div>
+    </form>
+  </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
   var main = {
@@ -145,7 +193,7 @@
         dataType: 'json',
         contentType: 'application/json; charset=utf-8'
       }).done(function (res) {
-        if(res.status){
+        if (res.status) {
           alert(res.message);
           $('#comment-like').text(res.likeNum);
         }

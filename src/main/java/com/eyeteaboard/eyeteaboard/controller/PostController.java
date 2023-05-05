@@ -39,7 +39,7 @@ public class PostController {
   }
 
 
-  @GetMapping("/{id}")
+  @GetMapping("/view/{id}")
   public String viewPost(Model model, @PathVariable Long id) {
     model.addAttribute("post", postService.findPost(id));
     model.addAttribute("comments", commentService.findCommentList(id));

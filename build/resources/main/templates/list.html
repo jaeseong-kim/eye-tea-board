@@ -1,55 +1,80 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
   <meta charset="UTF-8">
   <title>EyeTea Board</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+        crossorigin="anonymous">
 </head>
 <body>
-<h1>게시글 리스트 페이지</h1>
-<div>
-  카테고리 :
-  <a href="/post/list">전체</a> |
-  <a href="/post/list/KNOWLEDGE">지식</a> |
-  <a href="/post/list/DAILY_LIFE">사는 이야기</a> |
-  <a href="/post/list/STUDY">스터디</a> |
+<nav class="navbar bg-light">
+  <div class="container-fluid">
+    <a href="/" class="navbar-brand">EyeTea Board</a>
+    <div sec:authorize="isAuthenticated()">
+      <span sec:authentication="name"></span>
+      <a href="/logout" class="btn btn-dark" role="button">로그아웃</a>
+    </div>
+  </div>
+</nav>
+<div class="container-fluid text-center m-1">
+  <div class="row g-1">
+    <div class="w-auto col-md-2 offset-md-4">
+      <a href="/post/list" class="btn btn-light" role="button">전체</a>
+    </div>
+    <div class="w-auto col-md-2">
+      <a href="/post/list/KNOWLEDGE" class="btn btn-light" role="button">지식</a>
+    </div>
+    <div class="w-auto col-md-2">
+      <a href="/post/list/DAILY_LIFE" class="btn btn-light" role="button">사는 이야기</a>
+    </div>
+    <div class="w-auto col-md-2">
+      <a href="/post/list/STUDY" class="btn btn-light" role="button">스터디</a>
+    </div>
+    <div class="w-auto m-1 col-md align-self-end">
+      <select
+          onchange="if(this.value){location.href=(window.location.pathname+'?sort='+this.value);}">
+        <option value="">정렬순</option>
+        <option value="likeNum">좋아요순</option>
+      </select>
+    </div>
+  </div>
 </div>
 <div>
-  <a href="/post/save">글쓰기</a>
-</div>
-<div>
-  <select onchange="if(this.value) location.href=(window.location.pathname+'?sort='+this.value);">
-    <option value="">정렬순</option>
-    <option value="likeNum">좋아요순</option>
-  </select>
-</div>
-<div>
-  <a href="/">메인</a>
-</div>
-<div>
-  <table>
+  <table class="table table-hover">
     <thead>
     <tr>
-      <th>번호</th>
-      <th>제목</th>
-      <th>작성자</th>
-      <th>종아요 수</th>
-      <th>카테고리</th>
+      <th scope="col" style="width:10%">번호</th>
+      <th scope="col" style="width:50%">제목</th>
+      <th scope="col" style="width:10%">작성자</th>
+      <th scope="col" style="width:10%">종아요 수</th>
+      <th scope="col" style="width:10%">카테고리</th>
+      <th scope="col" style="width:10%">작성일</th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="postDto : ${list}">
       <td th:text="${postDto.getId()}"></td>
       <td>
-        <a th:href="@{/post/{id}(id=${postDto.getId()})}">
+        <a th:href="@{/post/view/{id}(id=${postDto.getId()})}">
           <span th:text="${postDto.getTitle()}"></span>
         </a>
       </td>
       <td th:text="${postDto.getEmail()}"></td>
       <td th:text="${postDto.getLikeNum()}"></td>
       <td th:text="${postDto.getCategory().getValue()}"></td>
+      <td th:text="${postDto.getRegDt()}"></td>
     </tr>
     </tbody>
   </table>
 </div>
+<div class="col-md-2 offset-md-10">
+  <a href="/post/save" class="btn btn-light" role="button">글쓰기</a>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"></script>
 </body>
 </html>

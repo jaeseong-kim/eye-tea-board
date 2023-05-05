@@ -1,40 +1,68 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
   <meta charset="UTF-8">
   <title>EyeTea Board</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+        crossorigin="anonymous">
 </head>
 <body>
-<h1>게시글 수정 페이지</h1>
-<form>
-  <div>
-    번호 : <input type="text" id="id" name="id" th:value="${post.getId()}" readonly>
+<nav class="navbar bg-light">
+  <div class="container-fluid">
+    <a href="/" class="navbar-brand">EyeTea Board</a>
+    <div sec:authorize="isAuthenticated()">
+      <span sec:authentication="name"></span>
+      <a href="/logout" class="btn btn-dark" role="button">로그아웃</a>
+    </div>
   </div>
-  <div>
-    제목 : <input type="text" id="title" name="title" th:value="${post.getTitle()}">
-  </div>
-  <div>
-    분류 :
-    <label for="knowledge">
-      지식 <input type="radio" id="knowledge" name="category" value="KNOWLEDGE"
-                th:checked="${post.getCategory().getValue() eq 'KNOWLEDGE'}">
-    </label>
-    <label for="daily_life">
-      사는 이야기 <input type="radio" id="daily_life" name="category" value="DAILY_LIFE"
-                    th:checked="${post.getCategory().getValue() eq 'DAILY_LIFE'}">
-    </label>
-    <label for="study">
-      스터디 <input type="radio" id="study" name="category" value="STUDY"
-                 th:checked="${post.getCategory().getValue() eq 'STUDY'}">
-    </label>
-  </div>
-  <div>
-    내용 : <input type="text" id="content" name="content" th:value="${post.getContent()}">
-  </div>
-  <button type="button" id="btn-update">확인</button>
-  <button type="button" id="btn-delete">삭제</button>
-</form>
-
+</nav>
+<div class="container mt-5">
+  <form>
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control" id="id" name="id" th:value="${post.getId()}" readonly
+             disabled>
+      <label for="id">게시글 번호</label>
+    </div>
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control" id="title" name="title" th:value="${post.getTitle()}"
+             placeholder="제목">
+      <label for="title">제목</label>
+    </div>
+    <div class="form-floating mb-3">
+      분류 :
+      <div class="form-check form-check-inline">
+        <input type="radio" class="form-check-input" id="knowledge" name="category"
+               value="KNOWLEDGE"
+               th:checked="${post.getCategory().getValue() eq 'KNOWLEDGE'}">
+        <label for="knowledge" class="form-check-label">지식</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input type="radio" class="form-check-input" id="daily_life" name="category"
+               value="DAILY_LIFE"
+               th:checked="${post.getCategory().getValue() eq 'DAILY_LIFE'}">
+        <label for="daily_life" class="form-check-label">사는 이야기</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input type="radio" class="form-check-input" id="study" name="category" value="STUDY"
+               th:checked="${post.getCategory().getValue() eq 'STUDY'}">
+        <label for="study" class="form-check-label">스터디</label>
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="content" class="form-label">내용</label>
+      <textarea class="form-control" id="content" name="content" th:text="${post.getContent()}"
+                rows="10"></textarea>
+    </div>
+    <button type="button" class="btn btn-primary" id="btn-update">확인</button>
+    <button type="button" class="btn btn-danger" id="btn-delete">삭제</button>
+  </form>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
   var main = {
@@ -67,9 +95,13 @@
         contentType: 'application/json; charset=utf-8',
         data: JSON.stringify(data)
       }).done(function (res) {
-        alert(res.message);
 
-        location.href = '/post/list'
+        if(res.status){
+          alert(res.message);
+          location.href = '/post/list';
+        }else{
+          alert(res.message);
+        }
       }).fail(function (error) {
         JSON.stringify(error);
       })

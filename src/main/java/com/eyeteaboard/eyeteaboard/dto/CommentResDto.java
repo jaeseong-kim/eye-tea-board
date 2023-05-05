@@ -1,7 +1,7 @@
 package com.eyeteaboard.eyeteaboard.dto;
 
 import com.eyeteaboard.eyeteaboard.entity.Comment;
-import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import lombok.Getter;
 
 @Getter
@@ -16,7 +16,7 @@ public class CommentResDto {
 
   private int likeNum;
 
-  private LocalDateTime regDt;
+  private String regDt;
 
   public CommentResDto(Comment entity) {
     this.commentId = entity.getCommentId();
@@ -24,7 +24,7 @@ public class CommentResDto {
     this.writer = entity.getWriter().getEmail();
     this.comment = entity.getComment();
     this.likeNum = entity.getLikeNum();
-    this.regDt = entity.getRegDt();
+    this.regDt = entity.getRegDt().format(DateTimeFormatter.ISO_DATE);
   }
 
 }

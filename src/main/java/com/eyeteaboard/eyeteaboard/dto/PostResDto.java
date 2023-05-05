@@ -9,6 +9,7 @@ import lombok.Getter;
 public class PostResDto {
 
   private Long id;
+  private String writer;
   private String title;
   private String content;
   private int likeNum;
@@ -17,6 +18,7 @@ public class PostResDto {
 
   public PostResDto(Post entity) {
     this.id = entity.getPostId();
+    this.writer = entity.getUser().getEmail();
     this.title = entity.getTitle();
     this.content = entity.getContent();
     this.likeNum = entity.getLikeNum();

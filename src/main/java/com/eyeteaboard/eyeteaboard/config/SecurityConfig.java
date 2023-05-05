@@ -1,6 +1,7 @@
 package com.eyeteaboard.eyeteaboard.config;
 
 import com.eyeteaboard.eyeteaboard.service.CustomOAuth2UserService;
+import com.eyeteaboard.eyeteaboard.type.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +16,7 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
   private final CustomOAuth2UserService customOAuth2UserService;
 
   private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
@@ -56,9 +58,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     // 접근 권한 설정
     http.authorizeRequests()
-        .antMatchers("/", "/justlogin", "/user/**", "/post/list/**", "/h2-console/**")
+        .antMatchers("/", "/justlogin", "/user/**", "/post/list/**", "/post/view/**",
+            "/h2-console/**")
         .permitAll()
-        .anyRequest()
-        .authenticated();
+        .antMatchers("/post/save", "/post/update/**", "/post/like/**", "/post/delete/**",
+            "/comment/**")
+        .hasAuthority(Role.USER.getKey());
   }
 }

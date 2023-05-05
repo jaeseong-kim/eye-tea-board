@@ -8,9 +8,12 @@ import com.eyeteaboard.eyeteaboard.dto.PostSaveReqDto;
 import com.eyeteaboard.eyeteaboard.dto.PostSaveResDto;
 import com.eyeteaboard.eyeteaboard.dto.PostUpdateReqDto;
 import com.eyeteaboard.eyeteaboard.dto.PostUpdateResDto;
+import com.eyeteaboard.eyeteaboard.entity.Comment;
 import com.eyeteaboard.eyeteaboard.entity.Post;
 import com.eyeteaboard.eyeteaboard.entity.PostLike;
 import com.eyeteaboard.eyeteaboard.entity.User;
+import com.eyeteaboard.eyeteaboard.repository.CommentLikeRepository;
+import com.eyeteaboard.eyeteaboard.repository.CommentRepository;
 import com.eyeteaboard.eyeteaboard.repository.PostLikeRepository;
 import com.eyeteaboard.eyeteaboard.repository.PostRepository;
 import com.eyeteaboard.eyeteaboard.repository.UserRepository;
@@ -19,11 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class PostService {
@@ -31,22 +36,15 @@ public class PostService {
   private final PostLikeRepository postLikeRepository;
   private final PostRepository postRepository;
   private final UserRepository userRepository;
+  private final CommentRepository commentRepository;
+
+  private final CommentLikeRepository commentLikeRepository;
 
   public PostSaveResDto postSave(PostSaveReqDto parameter, String email) {
 
-    Optional<User> optionalUser = userRepository.findByEmail(
-        "doctorwho123@naver.com"); // 로그인 기능 이후에 수정
-    /*
-    스프링 시큐리티에서 사용자를 관리해주기 때문에 필요없지 않나?
+    log.info("postSave의 email : " + email);
 
-    if (optionalUser.isEmpty() || !optionalUser.get().isAuthYn()) {
-      return PostSaveResDto.builder()
-                            .status(false)
-                            .message("존재하지 않는 시용자입니다.")
-                            .build();
-    }
-
-     */
+    Optional<User> optionalUser = userRepository.findByEmail(email);
 
     Post post = parameter.toEntity(optionalUser.get());
 
@@ -69,9 +67,11 @@ public class PostService {
       postList = postRepository.findAll(Sort.by(Direction.DESC, DEFAULT_ORDER));
     } else if (category != null) {
       if (sort == null) {
-        postList = postRepository.findAllByCategory(category, Sort.by(Direction.DESC, DEFAULT_ORDER));
+        postList = postRepository.findAllByCategory(category,
+            Sort.by(Direction.DESC, DEFAULT_ORDER));
       } else {
-        postList = postRepository.findAllByCategory(category, Sort.by(Direction.DESC, sort, DEFAULT_ORDER));
+        postList = postRepository.findAllByCategory(category,
+            Sort.by(Direction.DESC, sort, DEFAULT_ORDER));
       }
     } else {
       postList = postRepository.findAll(Sort.by(Direction.DESC, sort, DEFAULT_ORDER));
@@ -92,7 +92,7 @@ public class PostService {
   public PostResDto findPost(Long id) {
     Optional<Post> optionalPost = postRepository.findById(id);
     if (optionalPost.isEmpty()) {
-      //해당 게시글이 없습니다.
+      //예외처리로
     }
 
     Post post = optionalPost.get();
@@ -103,7 +103,14 @@ public class PostService {
   }
 
   @Transactional
-  public PostUpdateResDto update(Long id, PostUpdateReqDto parameter) {
+  public PostUpdateResDto updatePost(Long id, PostUpdateReqDto parameter) {
+    if (parameter.getCategory() == null) {
+      return PostUpdateResDto.builder()
+                             .status(false)
+                             .message("키워드를 선택하세요.")
+                             .build();
+    }
+
     Optional<Post> optionalPost = postRepository.findById(id);
     if (optionalPost.isEmpty()) {
       return PostUpdateResDto.builder()
@@ -123,7 +130,7 @@ public class PostService {
   }
 
   @Transactional
-  public PostDeleteResDto delete(Long id) {
+  public PostDeleteResDto deletePost(Long id) {
     Optional<Post> optionalPost = postRepository.findById(id);
     if (optionalPost.isEmpty()) {
       return PostDeleteResDto.builder()
@@ -132,7 +139,26 @@ public class PostService {
                              .build();
     }
 
-    postRepository.delete(optionalPost.get());
+    // 게시글 삭제 하기 전에 외래키때문에 외래키들을 모두 제거해야한다.
+
+    Post post = optionalPost.get();
+
+    // 게시글에 달린 댓글들 찾기
+    List<Comment> comments = commentRepository.findAllByPostId(post);
+
+    // 게시글에 달린 좋아요 삭제
+    postLikeRepository.deleteAllByPostId(post);
+
+    // 게시글에 달린 댓글의 좋아요 삭제
+    for (int i = 0; i < comments.size(); i++) {
+      commentLikeRepository.deleteAllByCommentId(comments.get(i));
+    }
+
+    // 게시글에 달린 댓글 삭제
+    commentRepository.deleteAllByPostId(post);
+
+    // 게시글 삭제
+    postRepository.delete(post);
 
     return PostDeleteResDto.builder()
                            .status(true)

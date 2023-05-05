@@ -24,8 +24,8 @@ public class CommentApiController {
   @PostMapping("/save")
   public CommentSaveResDto saveComment(@RequestBody CommentSaveReqDto dto, Principal principal) {
 
-    //String writer = principal.getName();
-    return commentService.saveComment(dto, "doctorwho123@naver.com");
+    String writer = principal.getName();
+    return commentService.saveComment(dto, writer);
   }
 
   @DeleteMapping("/delete/{commentId}")
@@ -35,7 +35,7 @@ public class CommentApiController {
 
   @PostMapping("/like/{commentId}")
   public CommentLikeResDto clickCommentLike(@PathVariable Long commentId, Principal principal) {
-    //String clicker = principal.getName();
-    return commentService.clickCommentLike(commentId, "doctorwho123@naver.com");
+    String clicker = principal.getName();
+    return commentService.clickCommentLike(commentId, clicker);
   }
 }

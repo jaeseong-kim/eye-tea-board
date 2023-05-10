@@ -1,6 +1,6 @@
 env:
   S3_BUCKET_NAME: eyeteaboard
-  PROJECT_NAME: eyeteaboard
+  PROJECT_NAME: eye-tea-board
 
 name: deploy
 

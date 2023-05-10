@@ -50,7 +50,7 @@ jobs:
       run: zip -r ./$PROJECT_NAME.zip .
       shell: bash
       
-    - name: Configure AWS credentials
+    - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
         aws-access-key-id: ${{secrets.AWS_ACEESS_KEY_ID}}

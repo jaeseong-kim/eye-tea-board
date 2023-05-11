@@ -33,6 +33,6 @@ echo "> $JAR_NAME 실행"
 
 nohup java -jar \
   -Dspring.config.location=classpath:/application.properties,/home/ubuntu/eyeteaboard/application-mail.properties,\
-  /home/ubuntu/eyeteaboard/application-oauth.properties,/home/ubuntu/eyeteaboard/application-real-db.properties,classpath:/application-real.properties \
-  -Dspring.profiles.active=real \
-  $JAR_NAME > $REPOSITORY/nohup.out 2>&1 &
+/home/ubuntu/eyeteaboard/application-oauth.properties,/home/ubuntu/eyeteaboard/application-real-db.properties,classpath:/application-real.properties \
+-Dspring.profiles.active=real \
+$JAR_NAME > $REPOSITORY/nohup.out 2>&1 &

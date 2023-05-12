@@ -18,7 +18,7 @@ public class PostLike extends BaseTimeEntity {
   private Long postLikeId;
 
   @ManyToOne
-  @JoinColumn(name = "id")
+  @JoinColumn(name = "postId")
   private Post postId;
 
   @ManyToOne

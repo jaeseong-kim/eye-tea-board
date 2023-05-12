@@ -4,7 +4,7 @@ ABSPATH=$(readlink -f $0)
 ABSDIR=$(dirname $ABSPATH)
 source ${ABSDIR}/profile.sh
 
-REPOSITORY=/home/ubuntu/eyeteaboard/step3
+REPOSITORY=/home/ubuntu/eyeteaboard/project
 PROJECT_NAME=eyeteaboard
 
 echo "> Build 파일 복사"

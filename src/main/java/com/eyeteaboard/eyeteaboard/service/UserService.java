@@ -29,6 +29,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UserService implements UserDetailsService {
 
+  private final String SERVER_ADDRESS ="http://ec2-43-200-186-103.ap-northeast-2.compute.amazonaws.com";
+
   private final PasswordEncoder passwordEncoder;
 
   private final JavaMailSender mailSender;
@@ -64,7 +66,7 @@ public class UserService implements UserDetailsService {
           + "<head>"
           + "</head>"
           + "<body>"
-          + "<a href=http://localhost:8080/user/auth/" + uuid + ">인증하기</a>"
+          + "<a href="+SERVER_ADDRESS+"/user/auth/" + uuid + ">인증하기</a>"
           + "</body>"
           + "</html>";
 

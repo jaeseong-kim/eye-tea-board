@@ -1,8 +1,8 @@
 ## Eye-Tea-Board
+<div align="center"><img src="./img/eyeteaboard-logo.jpg" width="300" height="300"></div>
 
 ## Web Page
-
-홈페이지 : [EyeTeaBoard](ec2-43-200-186-103.ap-northeast-2.compute.amazonaws.com)<br>
+홈페이지 : [EyeTeaBoard](ec2-43-200-186-103.ap-northeast-2.compute.amazonaws.com)  
 개발기간 : 2023.04.14 ~ 2023.xx
 
 ### 프로젝트 소개

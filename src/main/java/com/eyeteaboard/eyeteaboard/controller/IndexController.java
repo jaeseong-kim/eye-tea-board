@@ -32,4 +32,14 @@ public class IndexController {
     return "login";
   }
 
+  @GetMapping("/oauth-fail")
+  public String oauthLoginFail(Model model,
+      @RequestParam(name="error", required = false) boolean error,
+      @RequestParam(name = "exception",required = false) String exception){
+
+    model.addAttribute("error", error);
+    model.addAttribute("exception", exception);
+
+    return "oauth-fail";
+  }
 }

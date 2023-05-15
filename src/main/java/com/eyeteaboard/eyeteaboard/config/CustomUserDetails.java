@@ -1,6 +1,7 @@
 package com.eyeteaboard.eyeteaboard.config;
 
 import com.eyeteaboard.eyeteaboard.entity.User;
+import com.eyeteaboard.eyeteaboard.type.Login;
 import com.eyeteaboard.eyeteaboard.type.Role;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,15 +18,21 @@ public class CustomUserDetails implements UserDetails {
   private String name;
 
   private boolean authYn;
+
+  private boolean status;
   private List<Role> roles;
+
+  private Login loginType;
 
   public CustomUserDetails(User entity) {
     this.email = entity.getEmail();
     this.password = entity.getPassword();
     this.name = entity.getName();
     this.authYn = entity.isAuthYn();
+    this.status=entity.isStatus();
     this.roles = new ArrayList<>();
     this.roles.add(entity.getRole());
+    this.loginType = entity.getLoginType();
   }
 
   @Override
@@ -59,6 +66,10 @@ public class CustomUserDetails implements UserDetails {
 
   @Override
   public boolean isAccountNonLocked() {
+    if(!status){
+      return false;
+    }
+
     return true;
   }
 

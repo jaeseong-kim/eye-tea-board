@@ -49,8 +49,8 @@ public class OAuthAttributes {
     Map<String, Object> response = (Map<String, Object>) attributes.get("response");
 
     return OAuthAttributes.builder()
-                          .name((String)response.get("name"))
-                          .email((String)response.get("email"))
+                          .name((String) response.get("name"))
+                          .email((String) response.get("email"))
                           .attributes(response)
                           .nameAttributeKey(userNameAttributeName)
                           .loginType(Login.NAVER)
@@ -66,7 +66,9 @@ public class OAuthAttributes {
                .address("")
                .detailAddress("")
                .regDt(LocalDateTime.now())
+               .authDt(LocalDateTime.now())
                .authKey("")
+               .status(true)
                .role(Role.GUSET)
                .loginType(loginType)
                .build();

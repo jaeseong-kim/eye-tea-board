@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
@@ -28,7 +29,9 @@ public class CustomAuthFailureHandler extends SimpleUrlAuthenticationFailureHand
       error = Error.WRONG_EMAIL_OR_PASSWORD;
     } else if(exception instanceof DisabledException){
       error = Error.NOT_PERMIT_AUTH_KEY;
-    }else {
+    }else if(exception instanceof LockedException){
+      error = Error.BANNED_USER;
+    } else {
       error = Error.UNKNOW_ERROR;
     }
 

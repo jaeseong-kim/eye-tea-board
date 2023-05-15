@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>EyeTea Board</title>
+</head>
+<body>
+<div>
+  <div th:if="${error} == true">
+    <span th:text="${exception}"></span>
+  </div>
+  <div th:unless="${error} == true">
+  </div>
+</div>
+</body>
+</html>

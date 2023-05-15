@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>관리자 페이지</title>
+</head>
+<body>
+<form method="get" action="/admin">
+  <input type="text" id="email" name="email" placeholder="유저 이메일 입력"/>
+  <button type="submit" id="btn-search">검색</button>
+</form>
+<table>
+  <thead>
+  <tr>
+    <td>이메일</td>
+    <td>유저 페이지</td>
+    <td>게시글</td>
+    <td>댓글</td>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each=" user : ${list}">
+    <td th:text="${user.getEmail()}"></td>
+    <td><a th:href="@{/admin/users/{email}(email=${user.getEmail()})}">관리</a></td>
+    <td><a th:href="@{/admin/posts/{email}(email=${user.getEmail()})}">게시글</a></td>
+    <td><a th:href="@{/admin/comments/{eamil}(email=${user.getEmail()})}">댓글</a></td>
+  </tr>
+  </tbody>
+</table>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+
+</script>
+</body>
+</html>

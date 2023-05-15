@@ -1,6 +1,9 @@
 package com.eyeteaboard.eyeteaboard.service;
 
 import com.eyeteaboard.eyeteaboard.config.CustomUserDetails;
+import com.eyeteaboard.eyeteaboard.dto.AdminBanUserResDto;
+import com.eyeteaboard.eyeteaboard.dto.AdminFindUserDto;
+import com.eyeteaboard.eyeteaboard.dto.AdminFindUserInfoDto;
 import com.eyeteaboard.eyeteaboard.dto.AuthResDto;
 import com.eyeteaboard.eyeteaboard.dto.OAuthRegisterReqDto;
 import com.eyeteaboard.eyeteaboard.dto.OAuthRegisterResDto;
@@ -9,6 +12,8 @@ import com.eyeteaboard.eyeteaboard.dto.RegisterResDto;
 import com.eyeteaboard.eyeteaboard.entity.User;
 import com.eyeteaboard.eyeteaboard.repository.UserRepository;
 import com.eyeteaboard.eyeteaboard.type.Error;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import javax.mail.MessagingException;
@@ -28,8 +33,9 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Service
 public class UserService implements UserDetailsService {
+  private final String LOCAL_ADDRESS = "http://localhost:8080";
 
-  private final String SERVER_ADDRESS ="http://ec2-43-200-186-103.ap-northeast-2.compute.amazonaws.com";
+  private final String SERVER_ADDRESS = "http://ec2-43-200-186-103.ap-northeast-2.compute.amazonaws.com";
 
   private final PasswordEncoder passwordEncoder;
 
@@ -66,7 +72,7 @@ public class UserService implements UserDetailsService {
           + "<head>"
           + "</head>"
           + "<body>"
-          + "<a href="+SERVER_ADDRESS+"/user/auth/" + uuid + ">인증하기</a>"
+          + "<a href=" + SERVER_ADDRESS + "/user/auth/" + uuid + ">인증하기</a>"
           + "</body>"
           + "</html>";
 
@@ -147,5 +153,73 @@ public class UserService implements UserDetailsService {
     User user = optionalUser.get();
 
     return new CustomUserDetails(user);
+  }
+
+  public List<AdminFindUserDto> findAllUser() {
+    List<User> userList = userRepository.findAll();
+
+    List<AdminFindUserDto> adminAllUserDtoList = new ArrayList<>();
+    for (int i = 0; i < userList.size(); i++) {
+      User user = userList.get(i);
+      adminAllUserDtoList.add(AdminFindUserDto.builder()
+                                              .email(user.getEmail())
+                                              .build());
+    }
+
+    return adminAllUserDtoList;
+
+  }
+
+  public List<AdminFindUserDto> findUser(String email) {
+    Optional<User> optionalUser = userRepository.findByEmail(email);
+    if (optionalUser.isEmpty()) {
+      return null;
+    }
+
+    User user = optionalUser.get();
+    List<AdminFindUserDto> adminFindUserDtoList = new ArrayList<>();
+    adminFindUserDtoList.add(AdminFindUserDto.builder()
+                                             .email(user.getEmail())
+                                             .build());
+
+    return adminFindUserDtoList;
+  }
+
+  public AdminFindUserInfoDto findUserInfo(String email) {
+    Optional<User> optionalUser = userRepository.findByEmail(email);
+    if (optionalUser.isEmpty()) {
+      return null;
+    }
+
+    return new AdminFindUserInfoDto(optionalUser.get());
+  }
+
+  @Transactional
+  public AdminBanUserResDto changeUserStatus(String email) {
+    Optional<User> optionalUser = userRepository.findByEmail(email);
+    if (optionalUser.isEmpty()) {
+      return AdminBanUserResDto.builder()
+                               .status(false)
+                               .message("유저가 없습니다.")
+                               .build();
+    }
+
+    User user = optionalUser.get();
+
+    if (user.isBan()) {
+      user.stopBan();
+
+      return AdminBanUserResDto.builder()
+                               .status(true)
+                               .message("유저의 계정 정지가 풀렸습니다.")
+                               .build();
+    }
+
+    user.ban();
+
+    return AdminBanUserResDto.builder()
+                             .status(true)
+                             .message("유저의 계정을 정지했습니다.")
+                             .build();
   }
 }

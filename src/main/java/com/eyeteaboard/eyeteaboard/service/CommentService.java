@@ -50,6 +50,22 @@ public class CommentService {
     return dtoList;
   }
 
+  public List<CommentResDto> findCommentsByEmail(String email) {
+    Optional<User> optionalUser = userRepository.findByEmail(email);
+    if (optionalUser.isEmpty()) {
+      //유저 없음
+    }
+
+    List<Comment> commentList = commentRepository.findAllByWriter(optionalUser.get());
+
+    List<CommentResDto> commentResDtoList = new ArrayList<>();
+    for (int i = 0; i < commentList.size(); i++) {
+      commentResDtoList.add(new CommentResDto(commentList.get(i)));
+    }
+
+    return commentResDtoList;
+  }
+
   public CommentSaveResDto saveComment(CommentSaveReqDto dto, String writer) {
     Optional<Post> optionalPost = postRepository.findById(dto.getPostId());
     if (optionalPost.isEmpty()) {
@@ -78,12 +94,18 @@ public class CommentService {
   public CommentDelResDto deleteComment(Long commentId) {
     Optional<Comment> optionalComment = commentRepository.findById(commentId);
     if (optionalComment.isEmpty()) {
-      //해당 댓글이 없음
+      return CommentDelResDto.builder()
+                             .status(false)
+                             .message("해당 댓글이 없습니다.")
+                             .build();
     }
 
     Comment comment = optionalComment.get();
 
+    // 삭제할 댓글에 좋아요 삭제
     commentLikeRepository.deleteAllByCommentId(comment);
+
+    // 해당 댓글 삭제
     commentRepository.delete(comment);
 
     return CommentDelResDto.builder()

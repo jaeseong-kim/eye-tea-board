@@ -1,5 +1,7 @@
 package com.eyeteaboard.eyeteaboard.controller;
 
+import com.eyeteaboard.eyeteaboard.service.CommentService;
+import com.eyeteaboard.eyeteaboard.service.PostService;
 import com.eyeteaboard.eyeteaboard.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +16,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class AdminController {
 
+  private final CommentService commentService;
+
   private final UserService userService;
+  private final PostService postService;
 
   @GetMapping("/admin")
   public String admin(Model model, @RequestParam(required = false) String email) {
@@ -35,5 +40,15 @@ public class AdminController {
     return "admin/userInfo";
   }
 
+  @GetMapping("/admin/posts/{email}")
+  public String posts(Model model, @PathVariable String email){
+    model.addAttribute("posts", postService.findAllPostByEmail(email));
+    return "admin/posts";
+  }
 
+  @GetMapping("/admin/comments/{email}")
+  public String comments(Model model, @PathVariable String email){
+    model.addAttribute("comments",commentService.findCommentsByEmail(email));
+    return "admin/comments";
+  }
 }

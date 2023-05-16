@@ -54,6 +54,9 @@ public class User {
   @Column(nullable = false)
   private String authKey;
 
+  @Column(nullable = false)
+  private boolean status;
+
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
   private Role role;
@@ -73,11 +76,27 @@ public class User {
   }
 
   public void registerOAuthGuest(OAuthRegisterReqDto dto) {
-    this.password = UUID.randomUUID().toString();
+    this.password = UUID.randomUUID()
+                        .toString();
     this.birth = dto.getBirth();
     this.address = dto.getAddress();
     this.detailAddress = dto.getDetailAddress();
     this.authYn = true;
     this.role = Role.USER;
+  }
+
+  public boolean isBan() {
+    if (this.status) {
+      return false;
+    }
+    return true;
+  }
+
+  public void ban() {
+    this.status = false;
+  }
+
+  public void stopBan() {
+    this.status = true;
   }
 }

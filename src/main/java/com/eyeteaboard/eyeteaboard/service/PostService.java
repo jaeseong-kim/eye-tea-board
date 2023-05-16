@@ -204,4 +204,22 @@ public class PostService {
                          .message("좋아요를 눌렀습니다.")
                          .build();
   }
+
+  public List<PostResDto> findAllPostByEmail(String email){
+    Optional<User> optionalUser = userRepository.findByEmail(email);
+    if(optionalUser.isEmpty()){
+      //
+    }
+
+    User user = optionalUser.get();
+
+    List<PostResDto> postResDtoList = new ArrayList<>();
+
+    List<Post> postList = postRepository.findAllByUser(user);
+    for (int i = 0; i < postList.size(); i++) {
+      postResDtoList.add(new PostResDto(postList.get(i)));
+    }
+
+    return postResDtoList;
+  }
 }

@@ -4,17 +4,17 @@ import com.eyeteaboard.eyeteaboard.config.CustomOAuth2User;
 import com.eyeteaboard.eyeteaboard.dto.OAuthAttributes;
 import com.eyeteaboard.eyeteaboard.entity.User;
 import com.eyeteaboard.eyeteaboard.repository.UserRepository;
+import com.eyeteaboard.eyeteaboard.type.Error;
 import java.util.Collections;
 import java.util.Optional;
-import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
@@ -40,15 +40,20 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     //oauth2로 가져온 정보 확인하기
     log.info(oAuth2User.getAttributes().toString());
 
-
     OAuthAttributes attributes = OAuthAttributes.of(registrationId, userNameAttributeName,
         oAuth2User.getAttributes());
 
     // userRepo에 저장
     User user = saveOrUpdate(attributes);
 
-    return new CustomOAuth2User(Collections.singleton(new SimpleGrantedAuthority(user.getRole().getKey())),
-        attributes.getAttributes(), attributes.getNameAttributeKey(),user.getEmail(),user.getRole());
+    if (user.isBan()) {
+      throw new LockedException(Error.BANNED_USER.getMessage());
+    }
+
+    return new CustomOAuth2User(
+        Collections.singleton(new SimpleGrantedAuthority(user.getRole().getKey())),
+        attributes.getAttributes(), attributes.getNameAttributeKey(), user.getEmail(),
+        user.getRole());
   }
 
   private User saveOrUpdate(OAuthAttributes attributes) {

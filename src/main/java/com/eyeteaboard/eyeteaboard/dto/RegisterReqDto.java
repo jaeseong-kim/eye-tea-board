@@ -1,6 +1,7 @@
 package com.eyeteaboard.eyeteaboard.dto;
 
 import com.eyeteaboard.eyeteaboard.entity.User;
+import com.eyeteaboard.eyeteaboard.type.Login;
 import com.eyeteaboard.eyeteaboard.type.Role;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
@@ -32,24 +33,26 @@ public class RegisterReqDto {
 
   public User toEntity() {
     return User.builder()
-                .email(this.email)
-                .password(this.password)
-                .name(this.name)
-                .birth(this.birth)
-                .address(this.address)
-                .detailAddress(this.detailAddress)
-                .regDt(LocalDateTime.now())
-                .authYn(false)
-                .authKey(uuid)
-                .role(Role.USER)
-                .build();
+               .email(this.email)
+               .password(this.password)
+               .name(this.name)
+               .birth(this.birth)
+               .address(this.address)
+               .detailAddress(this.detailAddress)
+               .regDt(LocalDateTime.now())
+               .authYn(false)
+               .authKey(uuid)
+               .status(true)
+               .role(Role.USER)
+               .loginType(Login.OUR_SERVICE)
+               .build();
   }
 
-  public void insertAuthKey(String uuid){
+  public void insertAuthKey(String uuid) {
     this.uuid = uuid;
   }
 
-  public void encodePassword(String password){
+  public void encodePassword(String password) {
     this.password = password;
   }
 }

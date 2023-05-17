@@ -27,20 +27,33 @@
   - 댓글 읽기
 
 - ### 유저
-  - 게시글 CRUD
-  - 게시글 좋아요 누르기
-  - 댓글 읽기, 작성, 삭제
-  - 댓글 좋아요 누르기
+|게시글 쓰기|게시글 수정|
+|:---:|:---:|
+|<img src="https://github.com/jaeseong-kim/eye-tea-board/assets/61345774/4a3d7148-05a8-4915-8fb4-a1c3b7d7a933" width="100%" height="100%"/>|<img src="https://github.com/jaeseong-kim/eye-tea-board/assets/61345774/93de227a-ebb3-4769-a0c9-577cd3d324ab" width="100%" height="100%"/>|
+
+|게시글 좋아요|게시글 삭제|
+|:---:|:---:|
+|<img src="https://github.com/jaeseong-kim/eye-tea-board/assets/61345774/d3e35175-7420-4082-ae96-e65a282d99f3" width="100%" height="100%"/>|<img src="https://github.com/jaeseong-kim/eye-tea-board/assets/61345774/0136cb63-c862-48f9-8f62-021e6dd3c699" width="100%" height="100%"/>
+
+|댓글 쓰기|댓글 삭제|
+|:---:|:---:|
+|<img src="https://github.com/jaeseong-kim/eye-tea-board/assets/61345774/bb854f73-4d7e-4401-8653-bfed04b18471" width="100%" height="100%"/>|<img src="https://github.com/jaeseong-kim/eye-tea-board/assets/61345774/4974bb52-aa51-4bea-84a0-1af02fc9f324" width="100%" height="100%"/>|
+
+|댓글 좋아요|
+|:---:|
+|<img src="https://github.com/jaeseong-kim/eye-tea-board/assets/61345774/d0b51859-b64e-4f17-8a82-f87f72bdc5a9" width="100%" height="100%"/>|<img src="" width="100%" height="100%"/>|
+  
   
 - ### 관리자
-  - 사용자 정지
-  - 모든 게시글에 대해 삭제
-  - 모든 댓글에 대해 삭제
-  - 회원 정보 열람
+|회원정보 열람&사용자 정지|게시글 삭제|
+|:---:|:---:|
+|<img src="https://github.com/jaeseong-kim/eye-tea-board/assets/61345774/eb276be8-79f2-425d-b72b-f85bae219818" width="100%" height="100%"/>|<img src="https://github.com/jaeseong-kim/eye-tea-board/assets/61345774/1ffce7d3-7b6a-42dd-9e81-e45c0c56fae7" width="100%" height="100%"/>|<img src="" widht="100%" height="100%"/>|
+
+|댓글 삭제|
+|:---:|
+|<img src="https://github.com/jaeseong-kim/eye-tea-board/assets/61345774/574b4803-6c98-444f-b797-2d27b95555a3" widht="100%" height="100%"/>
 
 - ### 공통
-  - 게시글 키워드별로 보기
-  - 게시글 좋아요 순으로 보기
-  - 회원가입 / 로그인 / 간편 로그인
-
-
+|카테고리별로 보기|좋아요순으로 정렬|
+|:---:|:---:|
+|<img src="https://github.com/jaeseong-kim/eye-tea-board/assets/61345774/2b44e0dd-e5c3-458e-872e-9cbfb893b12d" width="100%" height="100%"/>|<img src="https://github.com/jaeseong-kim/eye-tea-board/assets/61345774/a6049332-29bd-4663-8475-771d8e106c78" width="100%" height="100%"/>|

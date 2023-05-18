@@ -50,7 +50,7 @@
       <a th:href="@{/post/update/{id}(id=${post.getId()})}" class="btn btn-secondary btn-sm"
          role="button">수정</a>
     </div>
-    <div class="mx-1">
+    <div sec:authorize="isAuthenticated()" class="mx-1">
       <form>
         <button type="button" class="btn btn-primary btn-sm" id="btn-like"
                 th:value="${post.getId()}">좋아요
@@ -81,20 +81,21 @@
         <td th:text="${comment.getComment()}"></td>
         <td>
           <button type="button" class="btn btn-light btn-sm" id="btn-comment-like"
-                  th:value="${comment.getCommentId()}">
+                  sec:authorize="isAuthenticated()" th:value="${comment.getCommentId()}">
             <img src="/img/commnet-like.png" width="15" height="12">
           </button>
         </td>
         <td>
           <button type="button" class="btn btn-danger btn-sm" id="btn-comment-del"
-                  th:if="${comment.getWriter()} eq ${#authentication.name}" th:value="${comment.getCommentId()}">삭제
+                  th:if="${comment.getWriter()} eq ${#authentication.name}"
+                  th:value="${comment.getCommentId()}">삭제
           </button>
         </td>
       </tr>
       </tbody>
     </table>
   </div>
-  <div class="mt-2">
+  <div class="mt-2" sec:authorize="isAuthenticated()">
     <form>
       <input type="hidden" id="post-id" name="post-id" th:value="${post.getId()}">
       <div class="input-group mb-3">

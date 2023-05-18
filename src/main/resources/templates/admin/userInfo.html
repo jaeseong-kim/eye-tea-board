@@ -77,51 +77,6 @@
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
         crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script>
-  var main = {
-    init: function () {
-      var _this = this;
-
-      $('#btn-ban').on('click', function () {
-        _this.ban();
-      });
-
-      $('#btn-stop-ban').on('click', function () {
-        _this.stopBan();
-      })
-    },
-
-    ban: function () {
-      var email = $('#btn-ban').val();
-
-      $.ajax({
-        type: 'PUT',
-        url: '/admin/users/status/' + email
-      }).done(function (res) {
-
-        if (res.status) {
-          alert(res.message);
-          location.reload();
-        }
-      })
-    },
-
-    stopBan: function () {
-      var email = $('#btn-stop-ban').val();
-
-      $.ajax({
-        type: 'PUT',
-        url: '/admin/users/status/' + email
-      }).done(function (res) {
-        if (res.status) {
-          alert(res.message);
-          location.reload();
-        }
-      })
-    }
-  }
-
-  main.init();
-</script>
+<script src="/js/api.js"></script>
 </body>
 </html>

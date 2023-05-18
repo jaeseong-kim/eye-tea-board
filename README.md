@@ -3,6 +3,7 @@
 
 ## Web Page
 홈페이지 : [EyeTeaBoard](http://ec2-43-200-186-103.ap-northeast-2.compute.amazonaws.com)  
+노션 : [EyeTeaBoard](https://www.notion.so/EyeTeaBoard-7f8a0e6801734f5eaaf2cec07882cb4b)  
 개발기간 : 2023.04.14 ~ 2023.05.16
 
 ### 프로젝트 소개

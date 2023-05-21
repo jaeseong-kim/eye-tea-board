@@ -2,7 +2,8 @@
 <div align="center"><img src="./img/eyeteaboard-logo.jpg" width="300" height="300"></div>
 
 ## Web Page
-홈페이지 : [EyeTeaBoard](ec2-43-200-186-103.ap-northeast-2.compute.amazonaws.com)  
+홈페이지 : [EyeTeaBoard](http://ec2-43-200-186-103.ap-northeast-2.compute.amazonaws.com)  
+노션 : [EyeTeaBoard](https://www.notion.so/EyeTeaBoard-7f8a0e6801734f5eaaf2cec07882cb4b)  
 개발기간 : 2023.04.14 ~ 2023.05.16
 
 ### 프로젝트 소개
@@ -33,7 +34,7 @@
 
 |게시글 좋아요|게시글 삭제|
 |:---:|:---:|
-|<img src="https://github.com/jaeseong-kim/eye-tea-board/assets/61345774/d3e35175-7420-4082-ae96-e65a282d99f3" width="100%" height="100%"/>|<img src="https://github.com/jaeseong-kim/eye-tea-board/assets/61345774/0136cb63-c862-48f9-8f62-021e6dd3c699" width="100%" height="100%"/>
+|<img src="https://github.com/jaeseong-kim/eye-tea-board/assets/61345774/d3e35175-7420-4082-ae96-e65a282d99f3" width="100%" height="100%"/>|<img src="https://github.com/jaeseong-kim/eye-tea-board/assets/61345774/0136cb63-c862-48f9-8f62-021e6dd3c699" width="100%" height="100%"/>|
 
 |댓글 쓰기|댓글 삭제|
 |:---:|:---:|
@@ -51,7 +52,7 @@
 
 |댓글 삭제|
 |:---:|
-|<img src="https://github.com/jaeseong-kim/eye-tea-board/assets/61345774/574b4803-6c98-444f-b797-2d27b95555a3" widht="100%" height="100%"/>
+|<img src="https://github.com/jaeseong-kim/eye-tea-board/assets/61345774/574b4803-6c98-444f-b797-2d27b95555a3" widht="100%" height="100%"/>|
 
 - ### 공통
 |카테고리별로 보기|좋아요순으로 정렬|

@@ -50,7 +50,7 @@
       <a th:href="@{/post/update/{id}(id=${post.getId()})}" class="btn btn-secondary btn-sm"
          role="button">수정</a>
     </div>
-    <div class="mx-1">
+    <div sec:authorize="isAuthenticated()" class="mx-1">
       <form>
         <button type="button" class="btn btn-primary btn-sm" id="btn-like"
                 th:value="${post.getId()}">좋아요
@@ -81,20 +81,21 @@
         <td th:text="${comment.getComment()}"></td>
         <td>
           <button type="button" class="btn btn-light btn-sm" id="btn-comment-like"
-                  th:value="${comment.getCommentId()}">
+                  sec:authorize="isAuthenticated()" th:value="${comment.getCommentId()}">
             <img src="/img/commnet-like.png" width="15" height="12">
           </button>
         </td>
         <td>
           <button type="button" class="btn btn-danger btn-sm" id="btn-comment-del"
-                  th:if="${comment.getWriter()} eq ${#authentication.name}" th:value="${comment.getCommentId()}">삭제
+                  th:if="${comment.getWriter()} eq ${#authentication.name}"
+                  th:value="${comment.getCommentId()}">삭제
           </button>
         </td>
       </tr>
       </tbody>
     </table>
   </div>
-  <div class="mt-2">
+  <div class="mt-2" sec:authorize="isAuthenticated()">
     <form>
       <input type="hidden" id="post-id" name="post-id" th:value="${post.getId()}">
       <div class="input-group mb-3">
@@ -112,101 +113,6 @@
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
         crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script>
-  var main = {
-    init: function () {
-      var _this = this;
-      $('#btn-like').on('click', function () {
-        _this.postLike();
-      });
-
-      $('#btn-comment').on('click', function () {
-        _this.comment();
-      });
-
-      $('#btn-comment-del').on('click', function () {
-        _this.commentDel();
-      });
-
-      $('#btn-comment-like').on('click', function () {
-        _this.commentLike();
-      })
-    },
-
-    postLike: function () {
-
-      var postId = $('#btn-like').val();
-
-      $.ajax({
-        type: 'POST',
-        url: '/post/like/' + postId,
-        dataType: 'json',
-        contentType: 'application/json; charset=utf-8',
-      }).done(function (res) {
-        if (res.status) {
-          alert(res.message);
-          $('#likeNum').text(res.likeNum);
-        } else {
-          alert(res.message);
-        }
-      })
-    },
-
-    comment: function () {
-      var data = {
-        postId: $('#post-id').val(),
-        comment: $('#comment').val()
-      };
-
-      $.ajax({
-        type: 'POST',
-        url: '/comment/save',
-        dataType: 'json',
-        contentType: 'application/json; charset=utf-8',
-        data: JSON.stringify(data)
-      }).done(function (res) {
-        if (res.status) {
-          alert(res.message);
-          location.reload();
-        }
-      })
-    },
-
-    commentDel: function () {
-      var commentId = $('#btn-comment-del').val();
-
-      $.ajax({
-        type: 'DELETE',
-        url: '/comment/delete/' + commentId,
-        dataType: 'json',
-        contentType: 'application/json; charset=utf-8'
-      }).done(function (res) {
-
-        if (res.status) {
-          alert(res.message);
-          location.reload();
-        }
-      })
-    },
-
-    commentLike: function () {
-      var commentId = $('#btn-comment-like').val();
-
-      $.ajax({
-        type: 'POST',
-        url: '/comment/like/' + commentId,
-        dataType: 'json',
-        contentType: 'application/json; charset=utf-8'
-      }).done(function (res) {
-        if (res.status) {
-          alert(res.message);
-          $('#comment-like').text(res.likeNum);
-        }
-      })
-    }
-  };
-
-  main.init();
-</script>
+<script src="/js/api.js"></script>
 </body>
 </html>

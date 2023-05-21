@@ -74,7 +74,7 @@
     </tbody>
   </table>
 </div>
-<div class="col-md-2 offset-md-10">
+<div sec:authorize="isAuthenticated()" class="col-md-2 offset-md-10">
   <a href="/post/save" class="btn btn-light" role="button">글쓰기</a>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"

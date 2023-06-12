@@ -33,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Service
 public class UserService implements UserDetailsService {
+
   private final String LOCAL_ADDRESS = "http://localhost:8080";
 
   private final String SERVER_ADDRESS = "http://ec2-43-200-186-103.ap-northeast-2.compute.amazonaws.com";
@@ -49,6 +50,24 @@ public class UserService implements UserDetailsService {
       return RegisterResDto.builder()
                            .status(false)
                            .message("중복된 이메일입니다.")
+                           .build();
+    }
+
+    // 이메일 형식 검사
+    String emailRegex = "^[a-zA-Z0-9-_]+@[a-zA-Z0-9-_]+\\.[a-zA-Z]+(\\.[a-zA-Z]+)?$";
+    if (!parameter.getEmail().matches(emailRegex)) {
+      return RegisterResDto.builder()
+                           .status(false)
+                           .message("이메일 형식이 올바르지 않습니다.")
+                           .build();
+    }
+
+    // 생년월일 형식 검사
+    String birthRegex = "^[0-9]{4}-[0-9]{2}-[0-9]{2}$";
+    if (!parameter.getBirth().matches(birthRegex)) {
+      return RegisterResDto.builder()
+                           .status(false)
+                           .message("생년월일 형식이 올바르지 않습니다. ex) 2023년 6월 12일 -> 2023-06-12")
                            .build();
     }
 

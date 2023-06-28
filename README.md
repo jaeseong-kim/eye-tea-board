@@ -7,7 +7,7 @@
 개발기간 : 2023.04.14 ~ 2023.05.16
 
 ### 프로젝트 소개
-차를 마시며 IT를 주제로 이야기를 나누는 게시판 프로젝트입니다.
+차를 마시며 IT를 주제로 여러가지 이야기를 나누는 CRUD 게시판입니다.
 
 ## Stacks
 ### 환경
@@ -21,6 +21,9 @@
 
 ### 서버
 <img src="https://img.shields.io/badge/Nginx-009639?style=flat&logo=NGINX&logoColor=white">
+
+## DB ERD
+<img src="./img/eyeteaboard-erd.png" widt="650" height="550">
 
 ## 주요 기능
 - ### 방문자

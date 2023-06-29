@@ -23,7 +23,10 @@
 <img src="https://img.shields.io/badge/Nginx-009639?style=flat&logo=NGINX&logoColor=white">
 
 ## DB ERD
-<img src="./img/eyeteaboard-erd.png" widt="650" height="550">
+<img src="./img/eyeteaboard-erd.png" width="750" height="550">
+
+## CI/CD Flow
+<img src="./img/cd_cd_workflow.png" width="750" height="550">
 
 ## 주요 기능
 - ### 방문자

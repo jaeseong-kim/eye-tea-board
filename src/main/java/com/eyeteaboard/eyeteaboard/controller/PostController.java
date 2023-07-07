@@ -41,14 +41,15 @@ public class PostController {
 
   @GetMapping("/view/{id}")
   public String viewPost(Model model, @PathVariable Long id) {
-    model.addAttribute("post", postService.findPost(id));
+    model.addAttribute("post", postService.findViewPost(id));
     model.addAttribute("comments", commentService.findCommentList(id));
     return "post/view-post";
   }
 
   @GetMapping("/update/{id}")
   public String updatePost(Model model, @PathVariable Long id) {
-    model.addAttribute("post", postService.findPost(id));
+
+    model.addAttribute("post", postService.findUpdatePost(id));
 
     return "post/update-post";
   }

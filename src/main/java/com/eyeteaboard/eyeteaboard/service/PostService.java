@@ -25,8 +25,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -41,8 +43,6 @@ public class PostService {
   private final CommentLikeRepository commentLikeRepository;
 
   public PostSaveResDto postSave(PostSaveReqDto parameter, String email) {
-
-    log.info("postSave의 email : " + email);
 
     Optional<User> optionalUser = userRepository.findByEmail(email);
 
@@ -89,7 +89,7 @@ public class PostService {
   }
 
   @Transactional
-  public PostResDto findPost(Long id) {
+  public PostResDto findViewPost(Long id) {
     Optional<Post> optionalPost = postRepository.findById(id);
     if (optionalPost.isEmpty()) {
       //예외처리로
@@ -100,6 +100,16 @@ public class PostService {
     post.updateLikeNum(likeNum); //더티체킹
 
     return new PostResDto(post);
+  }
+
+  @PostAuthorize("returnObject.writer == authentication.name")
+  public PostResDto findUpdatePost(Long id) {
+    Optional<Post> optionalPost = postRepository.findById(id);
+    if (optionalPost.isEmpty()) {
+      //
+    }
+
+    return new PostResDto(optionalPost.get());
   }
 
   @Transactional
@@ -139,8 +149,7 @@ public class PostService {
                              .build();
     }
 
-    // 게시글 삭제 하기 전에 외래키때문에 외래키들을 모두 제거해야한다.
-
+    // 게시글 삭제하기 전에 외래키때문에 외래키들을 모두 제거해야한다.
     Post post = optionalPost.get();
 
     // 게시글에 달린 댓글들 찾기
@@ -205,9 +214,9 @@ public class PostService {
                          .build();
   }
 
-  public List<PostResDto> findAllPostByEmail(String email){
+  public List<PostResDto> findAllPostByEmail(String email) {
     Optional<User> optionalUser = userRepository.findByEmail(email);
-    if(optionalUser.isEmpty()){
+    if (optionalUser.isEmpty()) {
       //
     }
 

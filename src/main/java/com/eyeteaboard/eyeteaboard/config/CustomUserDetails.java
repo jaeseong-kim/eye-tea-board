@@ -42,10 +42,6 @@ public class CustomUserDetails implements UserDetails {
     authorities.add(new SimpleGrantedAuthority(roles.get(0)
                                                     .getKey()));
 
-    if (email.equals("doctorwho123@naver.com")) {
-      authorities.add(new SimpleGrantedAuthority(Role.ADMIN.getKey()));
-    }
-
     return authorities;
   }
 

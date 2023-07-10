@@ -25,6 +25,7 @@
 </nav>
 <div class="container-fluid text-center m-1">
   <div class="row g-1">
+    <!-- 카테고리 버튼 -->
     <div class="w-auto col-md-2 offset-md-4">
       <a href="/post/list" class="btn btn-light" role="button">전체</a>
     </div>
@@ -37,10 +38,12 @@
     <div class="w-auto col-md-2">
       <a href="/post/list/STUDY" class="btn btn-light" role="button">스터디</a>
     </div>
+    <!-- 정렬 버튼 -->
     <div class="w-auto m-1 col-md align-self-end">
       <select
           onchange="if(this.value){location.href=(window.location.pathname+'?sort='+this.value);}">
         <option value="">정렬순</option>
+        <option value="postId">최신순</option>
         <option value="likeNum">좋아요순</option>
       </select>
     </div>
@@ -77,6 +80,48 @@
 <div sec:authorize="isAuthenticated()" class="col-md-2 offset-md-10">
   <a href="/post/save" class="btn btn-light" role="button">글쓰기</a>
 </div>
+
+<!-- 페이지네이션 -->
+<ul class="pagination justify-content-center">
+  <!-- Previous 버튼 -->
+  <span th:if="${pageInfo.isHasPrevious() eq true}">
+    <li class="page-item">
+      <a class="page-link"
+         th:href="@{/post/list(sort=${param.sort},page=${pageInfo.getCurrnetPage()}-1)}">Previous</a>
+    </li>
+  </span>
+  <span th:unless="${pageInfo.isHasPrevious() eq true}">
+    <li class="page-item disabled">
+      <a class="page-link"
+         th:href="@{/post/list(sort=${param.sort},page=${pageInfo.getCurrnetPage()}-1)}">Previous</a>
+    </li>
+  </span>
+  <!-- 숫자 버튼 -->
+  <li class="page-item"
+      th:each="num : ${#numbers.sequence(pageInfo.getStartPage(), pageInfo.getEndPage())}">
+    <span th:if="${pageInfo.getCurrnetPage() eq num}">
+      <a class="page-link active" th:href="@{/post/list/{category}(category=__${category}__,sort=${param.sort}, page=${num})}"
+         th:text="${num}"></a>
+    </span>
+    <span th:unless="${pageInfo.getCurrnetPage() eq num}">
+      <a class="page-link" th:href="@{/post/list/{category}(category=__${category}__,sort=${param.sort},page=${num})}"
+         th:text="${num}"></a>
+    </span>
+  </li>
+  <!-- Next 버튼 -->
+  <span th:if="${pageInfo.isHasNext() eq true}">
+    <li class="page-item">
+      <a class="page-link"
+         th:href="@{/post/list(sort=${param.sort},page=${pageInfo.getCurrnetPage()}+1)}">Next</a>
+    </li>
+  </span>
+  <span th:unless="${pageInfo.isHasNext() eq true}">
+    <li class="page-item disabled">
+      <a class="page-link"
+         th:href="@{/post/list(sort=${param.sort},page=${pageInfo.getCurrnetPage()}+1)}">Next</a>
+    </li>
+  </span>
+</ul>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
         crossorigin="anonymous"></script>

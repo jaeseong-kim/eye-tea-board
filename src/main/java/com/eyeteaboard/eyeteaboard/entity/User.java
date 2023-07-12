@@ -75,6 +75,15 @@ public class User {
     this.name = name;
   }
 
+  public void updatePassword(String encPassword) {
+    this.password = encPassword;
+  }
+
+  public void updateProfile(String address, String detailAddress) {
+    this.address = address;
+    this.detailAddress = detailAddress;
+  }
+
   public void registerOAuthGuest(OAuthRegisterReqDto dto) {
     this.password = UUID.randomUUID()
                         .toString();

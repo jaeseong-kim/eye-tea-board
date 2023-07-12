@@ -1,14 +1,18 @@
 package com.eyeteaboard.eyeteaboard.service;
 
 import com.eyeteaboard.eyeteaboard.config.CustomUserDetails;
+import com.eyeteaboard.eyeteaboard.dto.PasswordUpdateResDto;
 import com.eyeteaboard.eyeteaboard.dto.AdminBanUserResDto;
 import com.eyeteaboard.eyeteaboard.dto.AdminFindUserDto;
-import com.eyeteaboard.eyeteaboard.dto.AdminFindUserInfoDto;
+import com.eyeteaboard.eyeteaboard.dto.PasswordUpdateReqDto;
+import com.eyeteaboard.eyeteaboard.dto.UserInfoDto;
 import com.eyeteaboard.eyeteaboard.dto.AuthResDto;
 import com.eyeteaboard.eyeteaboard.dto.OAuthRegisterReqDto;
 import com.eyeteaboard.eyeteaboard.dto.OAuthRegisterResDto;
 import com.eyeteaboard.eyeteaboard.dto.RegisterReqDto;
 import com.eyeteaboard.eyeteaboard.dto.RegisterResDto;
+import com.eyeteaboard.eyeteaboard.dto.UserInfoUpdateReqDto;
+import com.eyeteaboard.eyeteaboard.dto.UserInfoUpdateResDto;
 import com.eyeteaboard.eyeteaboard.entity.User;
 import com.eyeteaboard.eyeteaboard.repository.UserRepository;
 import com.eyeteaboard.eyeteaboard.type.Error;
@@ -55,7 +59,8 @@ public class UserService implements UserDetailsService {
 
     // 이메일 형식 검사
     String emailRegex = "^[a-zA-Z0-9-_]+@[a-zA-Z0-9-_]+\\.[a-zA-Z]+(\\.[a-zA-Z]+)?$";
-    if (!parameter.getEmail().matches(emailRegex)) {
+    if (!parameter.getEmail()
+                  .matches(emailRegex)) {
       return RegisterResDto.builder()
                            .status(false)
                            .message("이메일 형식이 올바르지 않습니다.")
@@ -64,7 +69,8 @@ public class UserService implements UserDetailsService {
 
     // 생년월일 형식 검사
     String birthRegex = "^[0-9]{4}-[0-9]{2}-[0-9]{2}$";
-    if (!parameter.getBirth().matches(birthRegex)) {
+    if (!parameter.getBirth()
+                  .matches(birthRegex)) {
       return RegisterResDto.builder()
                            .status(false)
                            .message("생년월일 형식이 올바르지 않습니다. ex) 2023년 6월 12일 -> 2023-06-12")
@@ -204,14 +210,16 @@ public class UserService implements UserDetailsService {
     return adminFindUserDtoList;
   }
 
-  public AdminFindUserInfoDto findUserInfo(String email) {
+
+  public UserInfoDto findUserInfo(String email) {
     Optional<User> optionalUser = userRepository.findByEmail(email);
     if (optionalUser.isEmpty()) {
       return null;
     }
 
-    return new AdminFindUserInfoDto(optionalUser.get());
+    return new UserInfoDto(optionalUser.get());
   }
+
 
   @Transactional
   public AdminBanUserResDto changeUserStatus(String email) {
@@ -241,4 +249,48 @@ public class UserService implements UserDetailsService {
                              .message("유저의 계정을 정지했습니다.")
                              .build();
   }
+
+  @Transactional
+  public PasswordUpdateResDto updatePassword(PasswordUpdateReqDto parameter) {
+    Optional<User> optionalUser = userRepository.findByEmail(parameter.getEmail());
+    if (optionalUser.isEmpty()) {
+      //
+    }
+
+    String rawPassword = parameter.getPassword();
+    log.info("rawPassword : " + rawPassword + ", rePassword : " + parameter.getRepassword());
+    if (!rawPassword.equals(parameter.getRepassword())) {
+      return PasswordUpdateResDto.builder()
+                                 .result(false)
+                                 .message("비밀번호가 일치하지 않습니다.")
+                                 .build();
+    }
+
+    User user = optionalUser.get();
+    String encPassword = passwordEncoder.encode(rawPassword);
+    user.updatePassword(encPassword);
+
+    return PasswordUpdateResDto.builder()
+                               .result(true)
+                               .message("비밀번호가 변경되었습니다.")
+                               .build();
+  }
+
+  @Transactional
+  public UserInfoUpdateResDto updateProfile(UserInfoUpdateReqDto parameter) {
+    Optional<User> optionalUser = userRepository.findByEmail(parameter.getEmail());
+    if (optionalUser.isEmpty()) {
+      //
+    }
+
+    User user = optionalUser.get();
+
+    user.updateProfile(parameter.getAddress(), parameter.getDetailAddress());
+
+    return UserInfoUpdateResDto.builder()
+                               .result(true)
+                               .message("프로필 수정이 완료되었습니다.")
+                               .build();
+  }
+
 }

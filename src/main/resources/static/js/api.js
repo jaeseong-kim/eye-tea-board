@@ -1,5 +1,5 @@
 var main = {
-  init : function (){
+  init: function () {
     var _this = this;
 
     $('#btn-register').on('click', function () {
@@ -54,13 +54,21 @@ var main = {
       _this.stopBan();
     });
 
-    $('#btn-post-del-admin').on('click',function(){
+    $('#btn-post-del-admin').on('click', function () {
       _this.adminDeletePost();
     });
 
     $('#btn-comment-del-admin').on('click', function () {
       _this.adminDeleteComment();
     });
+
+    $('#btn-password-update').on('click', function () {
+      _this.passwordUpdate();
+    });
+
+    $('#btn-info-update').on('click', function () {
+      _this.infoUpdate();
+    })
   },
 
   register: function () {
@@ -195,10 +203,10 @@ var main = {
       data: JSON.stringify(data)
     }).done(function (res) {
 
-      if(res.status){
+      if (res.status) {
         alert(res.message);
         location.href = '/post/list';
-      }else{
+      } else {
         alert(res.message);
       }
     }).fail(function (error) {
@@ -323,12 +331,12 @@ var main = {
     })
   },
 
-  adminDeletePost : function (){
+  adminDeletePost: function () {
     var id = $('#btn-post-del-admin').val();
 
     $.ajax({
       type: 'DELETE',
-      url: '/admin/posts/'+id,
+      url: '/admin/posts/' + id,
     }).done(function (res) {
       alert(res.message);
       location.reload();
@@ -348,6 +356,49 @@ var main = {
       location.reload();
     }).fail(function (error) {
       alert(JSON.stringify(error));
+    })
+  },
+
+  passwordUpdate: function () {
+    var data = {
+      email: $('#email').val(),
+      password: $('#password').val(),
+      repassword: $('#repassword').val()
+    };
+
+    $.ajax({
+      type: 'PUT',
+      url: '/user/update-password',
+      dataType: 'json',
+      contentType: 'application/json; charset=utf-8',
+      data: JSON.stringify(data)
+    }).done(function (res) {
+      alert(res.message);
+    }).fail(function (err) {
+      alert(JSON.stringify(err));
+    })
+  },
+
+  infoUpdate: function () {
+    var email = $('#email').val();
+
+    var data = {
+      email: $('#email').val(),
+      address: $('#address').val(),
+      detailAddress: $('#detailAddress').val()
+    };
+
+    $.ajax({
+      type: 'PUT',
+      url: '/user/update-info',
+      dataType: 'json',
+      contentType: 'application/json; charset=utf-8',
+      data: JSON.stringify(data)
+    }).done(function (res) {
+      if (res.result) {
+        alert(res.message);
+        location.href = '/user/mypage/' + email;
+      }
     })
   }
 };

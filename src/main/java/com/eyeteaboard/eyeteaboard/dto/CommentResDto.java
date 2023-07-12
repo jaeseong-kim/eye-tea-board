@@ -26,5 +26,4 @@ public class CommentResDto {
     this.likeNum = entity.getLikeNum();
     this.regDt = entity.getRegDt().format(DateTimeFormatter.ISO_DATE);
   }
-
 }

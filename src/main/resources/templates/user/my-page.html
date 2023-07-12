@@ -20,28 +20,20 @@
     <div sec:authorize="isAuthenticated()">
       <span sec:authentication="name"></span>
       <a href="/logout" class="btn btn-dark" role="button">로그아웃</a>
-      <a class="btn btn-info" href="/user/my-page">마이페이지</a>
     </div>
   </div>
 </nav>
 
-<div class="container mt-5">
-  <div class="position-relative">
-    <div class="d-flex justify-content-center">
-      <a href="/post/list" class="btn btn-primary w-25 p-2" role="button">게시글 리스트</a>
-    </div>
-  </div>
-  <div class="d-flex justify-content-center">
-    <div sec:authorize="isAnonymous()" class="btn-group-vertical w-25 p-3" role="group"
-         aria-label="Vertical button group">
-      <a href="/justlogin" class="btn btn-light" role="button">로그인</a>
-      <a href="/oauth2/authorization/google" class="btn btn-light" role="button">구글로 로그인</a>
-      <a href="/oauth2/authorization/naver" class="btn btn-light" role="button">네이버로 로그인</a>
-      <a href="/user/register" class="btn btn-light" role="button">회원가입</a>
-    </div>
+<div class="d-flex justify-content-center">
+  <div class="btn-group-vertical w-25 p-3">
+    <a class="btn btn-primary mb-1"
+       th:href="@{/user/my-page/edit/{email}(email=${#authentication.getName()})}">내 정보 수정</a>
+    <a class="btn btn-primary mb-1"
+       th:href="@{/user/my-page/posts/{email}(email=${#authentication.getName()})}">내 게시글</a>
+    <a class="btn btn-primary mb-1"
+       th:href="@{/user/my-page/comments/{email}(email=${#authentication.getName()})}">내 댓글</a>
   </div>
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
         crossorigin="anonymous"></script>

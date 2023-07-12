@@ -37,6 +37,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class PostService {
 
+  private final int SIZE_PER_PAGE = 10;
+
   private final PostLikeRepository postLikeRepository;
   private final PostRepository postRepository;
   private final UserRepository userRepository;
@@ -61,14 +63,12 @@ public class PostService {
 
   public Page<PostListResDto> getPagePosts(Category category, int page, String sort) {
 
-    // 페이지 당 보여질 게시글의 수
-    final int SIZE = 10;
-
     // 요청할 페이지 만들기
-    Pageable pageable = PageRequest.of(page, SIZE, Sort.by(sort).descending());
+    Pageable pageable = PageRequest.of(page, SIZE_PER_PAGE, Sort.by(sort).descending());
 
     log.info(
-        "요청받은 페이지 번호 : " + pageable.getPageNumber() + ", 정렬 : " + sort + ", category : " + category);
+        "요청받은 페이지 번호 : " + pageable.getPageNumber() + ", 정렬 : " + sort + ", category : "
+            + category);
 
     if (category == null) {
       return postRepository.findAll(pageable)
@@ -77,6 +77,18 @@ public class PostService {
       return postRepository.findAllByCategory(category, pageable)
                            .map(PostListResDto::new);
     }
+  }
+
+  public Page<PostListResDto> getPagePostsByEmail(int page, String email) {
+    Optional<User> optionalUser = userRepository.findByEmail(email);
+    if(optionalUser.isEmpty()){
+
+    }
+
+    User user = optionalUser.get();
+    Pageable pageable = PageRequest.of(page, SIZE_PER_PAGE);
+
+    return postRepository.findAllByUserOrderByPostIdDesc(pageable, user).map(PostListResDto::new);
   }
 
   public PageInfoDto getPageInfo(Page<PostListResDto> page) {

@@ -7,9 +7,11 @@ import java.time.format.DateTimeFormatter;
 import lombok.Getter;
 
 @Getter
-public class AdminFindUserInfoDto {
+public class UserInfoDto {
 
   private String email;
+
+  private String password;
 
   private String name;
 
@@ -27,8 +29,9 @@ public class AdminFindUserInfoDto {
 
   private Login loginType;
 
-  public AdminFindUserInfoDto(User entity) {
+  public UserInfoDto(User entity) {
     this.email = entity.getEmail();
+    this.password = entity.getPassword();
     this.name = entity.getName();
     this.birth = entity.getBirth();
     this.address = entity.getAddress();

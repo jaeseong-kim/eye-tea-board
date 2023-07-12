@@ -5,6 +5,7 @@ import com.eyeteaboard.eyeteaboard.dto.CommentLikeResDto;
 import com.eyeteaboard.eyeteaboard.dto.CommentResDto;
 import com.eyeteaboard.eyeteaboard.dto.CommentSaveReqDto;
 import com.eyeteaboard.eyeteaboard.dto.CommentSaveResDto;
+import com.eyeteaboard.eyeteaboard.dto.PageInfoDto;
 import com.eyeteaboard.eyeteaboard.entity.Comment;
 import com.eyeteaboard.eyeteaboard.entity.CommentLike;
 import com.eyeteaboard.eyeteaboard.entity.Post;
@@ -17,9 +18,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class CommentService {
@@ -142,4 +148,35 @@ public class CommentService {
                             .message("댓글 좋아요를 눌렀습니다.")
                             .build();
   }
+
+  public Page<CommentResDto> getPageCommentsByEmail(int page, String email) {
+    Optional<User> optionalUser = userRepository.findByEmail(email);
+    if (optionalUser.isEmpty()) {
+
+    }
+
+    final int SIZE_PER_PAGE = 10;
+
+    Pageable pageable = PageRequest.of(page, SIZE_PER_PAGE);
+
+    User user = optionalUser.get();
+    return commentRepository.findAllByWriterOrderByCommentIdDesc(pageable, user)
+                            .map(CommentResDto::new);
+  }
+
+  public PageInfoDto getPageInfoDto(Page<CommentResDto> page){
+    final int COUNT_LIST = 5;
+
+    int currentPage = page.getNumber() + 1;
+    int startPage = (((currentPage - 1) / COUNT_LIST) * COUNT_LIST + 1);
+    int endPage = Math.min(startPage + COUNT_LIST - 1, page.getTotalPages());
+
+    log.info("시작 페이지 : " + startPage);
+    log.info("현재 페이지 : " + currentPage);
+    log.info("끝 페이지 : " + endPage);
+
+    return new PageInfoDto(currentPage, startPage, endPage, page.hasPrevious(),
+        page.hasNext());
+  }
+
 }

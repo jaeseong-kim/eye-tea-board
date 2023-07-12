@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <title>EyeTea Board</title>
+  <link rel="icon" href="/img/favicon-16x16.png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+        crossorigin="anonymous">
+</head>
+<body>
+<nav class="navbar bg-light">
+  <div class="container-fluid">
+    <a href="/" class="navbar-brand">
+      <img src="/img/eyeteaboard-logo.jpg" width="40" height="40" class="d-inline-block">
+      EyeTea Board
+    </a>
+    <div sec:authorize="isAuthenticated()">
+      <span sec:authentication="name"></span>
+      <a href="/logout" class="btn btn-dark" role="button">로그아웃</a>
+      <a class="btn btn-info" href="/user/my-page">마이페이지</a>
+    </div>
+  </div>
+</nav>
+<!-- 댓글 리스트 -->
+<div>
+  <table>
+    <thead>
+    <tr>
+      <th scope="col" style="width:10%;"></th>
+      <th scope="col" style="width:10%;"></th>
+      <th scope="col" style="width:10%;"></th>
+      <th scope="col" style="width:50%;"></th>
+      <th scope="col" style="width:10%;"></th>
+      <th scope="col" style="width:10%;"></th>
+    </tr>
+    </thead>
+    <tbody class="text-center">
+    <tr th:each="comment : ${comments}">
+      <td th:text="${comment.getWriter()}"></td>
+      <td id="comment-like" th:text="${comment.getLikeNum()}"></td>
+      <td th:text="${comment.getRegDt()}"></td>
+      <td th:text="${comment.getComment()}"></td>
+      <td><a th:href="@{/post/view/{id}(id=${comment.getPostId()})}">→</a></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 페이지네이션 -->
+<ul class="pagination justify-content-center">
+  <!-- Previous 버튼 -->
+  <span th:if="${pageInfo.isHasPrevious() eq true}">
+    <li class="page-item">
+      <a class="page-link"
+         th:href="@{/user/my-page/comments/{email}(email=${#authentication.getName()},page=${pageInfo.getCurrnetPage()}-1)}">Previous</a>
+    </li>
+  </span>
+  <span th:unless="${pageInfo.isHasPrevious() eq true}">
+    <li class="page-item disabled">
+      <a class="page-link"
+         th:href="@{/user/my-page/comments/{email}(email=${#authentication.getName()},page=${pageInfo.getCurrnetPage()}-1)}">Previous</a>
+    </li>
+  </span>
+  <!-- 숫자 버튼 -->
+  <li class="page-item"
+      th:each="num : ${#numbers.sequence(pageInfo.getStartPage(), pageInfo.getEndPage())}">
+    <span th:if="${pageInfo.getCurrnetPage() eq num}">
+      <a class="page-link active"
+         th:href="@{/user/my-page/comments/{email}(email=${#authentication.getName()},page=${num})}"
+         th:text="${num}"></a>
+    </span>
+    <span th:unless="${pageInfo.getCurrnetPage() eq num}">
+      <a class="page-link"
+         th:href="@{/user/my-page/comments/{email}(email=${#authentication.getName()},page=${num})}"
+         th:text="${num}"></a>
+    </span>
+  </li>
+  <!-- Next 버튼 -->
+  <span th:if="${pageInfo.isHasNext() eq true}">
+    <li class="page-item">
+      <a class="page-link"
+         th:href="@{/user/my-page/comments/{email}(email=${#authentication.getName()},page=${pageInfo.getCurrnetPage()}+1)}">Next</a>
+    </li>
+  </span>
+  <span th:unless="${pageInfo.isHasNext() eq true}">
+    <li class="page-item disabled">
+      <a class="page-link"
+         th:href="@{/user/my-page/comments/{email}(email=${#authentication.getName()},page=${pageInfo.getCurrnetPage()}+1)}">Next</a>
+    </li>
+  </span>
+</ul>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"></script>
+</body>
+</html>

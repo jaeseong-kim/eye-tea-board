@@ -64,3 +64,9 @@
 |카테고리별로 보기|좋아요순으로 정렬|
 |:---:|:---:|
 |<img src="https://github.com/jaeseong-kim/eye-tea-board/assets/61345774/2b44e0dd-e5c3-458e-872e-9cbfb893b12d" width="100%" height="100%"/>|<img src="https://github.com/jaeseong-kim/eye-tea-board/assets/61345774/a6049332-29bd-4663-8475-771d8e106c78" width="100%" height="100%"/>|
+
+## 유지/보수
+  - 게시글 수정 보안 이슈 해결
+  - Pagination 기능 추가
+  - 마이페이지 기능 추가(내 게시글, 내 댓글, 개인정보 수정)
+  - 컨트롤러단 유효성 검사(진행중)

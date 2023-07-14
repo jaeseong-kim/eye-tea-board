@@ -6,12 +6,14 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum Error {
-  NO_USER("존재하지 않는 이메일입니다. 회원가입 후 로그인하세요."),
-  WRONG_EMAIL_OR_PASSWORD("잘못된 이메일 또는 비밀번호입니다."),
-  NOT_PERMIT_AUTH_KEY("이메일 미인증입니다. 인증 후 로그인하세요."),
+  NO_USER(400,"존재하지 않는 이메일입니다. 회원가입 후 로그인하세요."),
+  WRONG_EMAIL_OR_PASSWORD(400,"잘못된 이메일 또는 비밀번호입니다."),
+  NOT_PERMIT_AUTH_KEY(400,"이메일 미인증입니다. 인증 후 로그인하세요."),
 
-  BANNED_USER("계정 정지된 유저입니다. 고객센터에 문의하세요."),
-  UNKNOW_ERROR("알 수 없는 에러입니다. 고객센터에 문의하세요.");
+  BANNED_USER(400,"계정 정지된 유저입니다. 고객센터에 문의하세요."),
+  UNKNOW_ERROR(500,"알 수 없는 에러입니다. 고객센터에 문의하세요.");
+
+  private final int code;
   private final String message;
 
 }

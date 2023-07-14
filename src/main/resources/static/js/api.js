@@ -97,7 +97,7 @@ var main = {
       }
 
     }).fail(function (error) {
-      alert(JSON.stringify(error));
+      alert(error.responseText);
     })
   },
 

@@ -24,7 +24,6 @@ public class AdminController {
   @GetMapping("/admin")
   public String admin(Model model, @RequestParam(required = false) String email) {
 
-    log.info("찾을 이메일 : " + email);
     if (email != null) {
       model.addAttribute("list", userService.findUser(email));
     } else {

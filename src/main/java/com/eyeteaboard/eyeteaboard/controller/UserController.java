@@ -44,8 +44,6 @@ public class UserController {
   @GetMapping("/user/auth/{authKey}")
   public String emailAuth(Model model, @PathVariable(value = "authKey") String authKey) {
 
-    log.info("authKey : " + authKey);
-
     model.addAttribute("response", userService.authEmail(authKey));
 
     return "user/auth";

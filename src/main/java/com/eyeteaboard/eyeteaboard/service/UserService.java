@@ -14,6 +14,7 @@ import com.eyeteaboard.eyeteaboard.dto.RegisterResDto;
 import com.eyeteaboard.eyeteaboard.dto.UserInfoUpdateReqDto;
 import com.eyeteaboard.eyeteaboard.dto.UserInfoUpdateResDto;
 import com.eyeteaboard.eyeteaboard.entity.User;
+import com.eyeteaboard.eyeteaboard.exception.NoUserException;
 import com.eyeteaboard.eyeteaboard.repository.UserRepository;
 import com.eyeteaboard.eyeteaboard.type.Error;
 import java.util.ArrayList;
@@ -58,8 +59,7 @@ public class UserService implements UserDetailsService {
     }
 
     // 이메일 인증키 생성
-    String uuid = UUID.randomUUID()
-                      .toString();
+    String uuid = UUID.randomUUID().toString();
     parameter.insertAuthKey(uuid);
 
     // 비밀번호 암호화
@@ -127,10 +127,10 @@ public class UserService implements UserDetailsService {
 
   @Transactional
   public OAuthRegisterResDto oauthRegister(OAuthRegisterReqDto parameter) {
-    // 1
-    User user = findByEmail(parameter.getEmail());
 
-    //더티체킹
+    User user = findUserByEmail(parameter.getEmail());
+
+    // 더티체킹
     user.registerOAuthGuest(parameter);
 
     return OAuthRegisterResDto.builder()
@@ -164,12 +164,10 @@ public class UserService implements UserDetailsService {
     }
 
     return adminAllUserDtoList;
-
   }
 
   /**
    * 유저를 찾는 메소드입니다.
-   *
    * @param email 찾을 유저의 이메일
    * @return List<AdminFindUserDto>로 반환
    */
@@ -189,7 +187,7 @@ public class UserService implements UserDetailsService {
 
   public UserInfoDto findUserInfo(String email) {
 
-    User user = findByEmail(email);
+    User user = findUserByEmail(email);
 
     return new UserInfoDto(user);
   }
@@ -198,7 +196,7 @@ public class UserService implements UserDetailsService {
   @Transactional
   public AdminBanUserResDto changeUserStatus(String email) {
 
-    User user = findByEmail(email);
+    User user = findUserByEmail(email);
 
     if (user.banned()) {
 
@@ -221,14 +219,14 @@ public class UserService implements UserDetailsService {
   @Transactional
   public PasswordUpdateResDto updatePassword(PasswordUpdateReqDto parameter) {
 
-    User user = findByEmail(parameter.getEmail());
-
     if (!parameter.checkPassword()) {
       return PasswordUpdateResDto.builder()
                                  .result(false)
                                  .message("비밀번호가 일치하지 않습니다.")
                                  .build();
     }
+
+    User user = findUserByEmail(parameter.getEmail());
 
     String encPassword = passwordEncoder.encode(parameter.getPassword());
 
@@ -243,7 +241,7 @@ public class UserService implements UserDetailsService {
   @Transactional
   public UserInfoUpdateResDto updateProfile(UserInfoUpdateReqDto parameter) {
 
-    User user = findByEmail(parameter.getEmail());
+    User user = findUserByEmail(parameter.getEmail());
 
     user.updateProfile(parameter.getAddress(), parameter.getDetailAddress());
 
@@ -253,8 +251,8 @@ public class UserService implements UserDetailsService {
                                .build();
   }
 
-  private User findByEmail(String email) {
+  private User findUserByEmail(String email) {
     return userRepository.findByEmail(email)
-                         .orElseThrow(() -> new UsernameNotFoundException("해당 유저가 없습니다." + email));
+                         .orElseThrow(() -> new NoUserException(Error.NO_USER));
   }
 }

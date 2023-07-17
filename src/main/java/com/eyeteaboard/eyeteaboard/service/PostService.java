@@ -13,12 +13,15 @@ import com.eyeteaboard.eyeteaboard.entity.Comment;
 import com.eyeteaboard.eyeteaboard.entity.Post;
 import com.eyeteaboard.eyeteaboard.entity.PostLike;
 import com.eyeteaboard.eyeteaboard.entity.User;
+import com.eyeteaboard.eyeteaboard.exception.NoPostException;
+import com.eyeteaboard.eyeteaboard.exception.NoUserException;
 import com.eyeteaboard.eyeteaboard.repository.CommentLikeRepository;
 import com.eyeteaboard.eyeteaboard.repository.CommentRepository;
 import com.eyeteaboard.eyeteaboard.repository.PostLikeRepository;
 import com.eyeteaboard.eyeteaboard.repository.PostRepository;
 import com.eyeteaboard.eyeteaboard.repository.UserRepository;
 import com.eyeteaboard.eyeteaboard.type.Category;
+import com.eyeteaboard.eyeteaboard.type.Error;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -48,11 +51,11 @@ public class PostService {
 
   public PostSaveResDto postSave(PostSaveReqDto parameter, String email) {
 
-    Optional<User> optionalUser = userRepository.findByEmail(email);
+    User user = findUserByEmail(email);
 
-    Post post = parameter.toEntity(optionalUser.get());
+    Post post = parameter.toEntity(user);
 
-    //저장
+    // 저장
     postRepository.save(post);
 
     return PostSaveResDto.builder()
@@ -66,10 +69,6 @@ public class PostService {
     // 요청할 페이지 만들기
     Pageable pageable = PageRequest.of(page, SIZE_PER_PAGE, Sort.by(sort).descending());
 
-    log.info(
-        "요청받은 페이지 번호 : " + pageable.getPageNumber() + ", 정렬 : " + sort + ", category : "
-            + category);
-
     if (category == null) {
       return postRepository.findAll(pageable)
                            .map(PostListResDto::new);
@@ -80,6 +79,7 @@ public class PostService {
   }
 
   public Page<PostListResDto> getPagePostsByEmail(int page, String email) {
+    // 2
     Optional<User> optionalUser = userRepository.findByEmail(email);
     if(optionalUser.isEmpty()){
 
@@ -99,56 +99,35 @@ public class PostService {
     int startPage = (((currentPage - 1) / COUNT_LIST) * COUNT_LIST + 1);
     int endPage = Math.min(startPage + COUNT_LIST - 1, page.getTotalPages());
 
-    log.info("시작 페이지 : " + startPage);
-    log.info("현재 페이지 : " + currentPage);
-    log.info("끝 페이지 : " + endPage);
-
     return new PageInfoDto(currentPage, startPage, endPage, page.hasPrevious(),
         page.hasNext());
   }
 
   @Transactional
   public PostResDto findViewPost(Long id) {
-    Optional<Post> optionalPost = postRepository.findById(id);
-    if (optionalPost.isEmpty()) {
-      //예외처리로
-    }
 
-    Post post = optionalPost.get();
+    Post post = findPostById(id);
+
     int likeNum = postLikeRepository.countAllByPostId(post);
-    post.updateLikeNum(likeNum); //더티체킹
+
+    // 더티체킹
+    post.updateLikeNum(likeNum);
 
     return new PostResDto(post);
   }
 
   @PostAuthorize("returnObject.writer == authentication.name")
   public PostResDto findUpdatePost(Long id) {
-    Optional<Post> optionalPost = postRepository.findById(id);
-    if (optionalPost.isEmpty()) {
-      //
-    }
 
-    return new PostResDto(optionalPost.get());
+    Post post = findPostById(id);
+
+    return new PostResDto(post);
   }
 
   @Transactional
   public PostUpdateResDto updatePost(Long id, PostUpdateReqDto parameter) {
-    if (parameter.getCategory() == null) {
-      return PostUpdateResDto.builder()
-                             .status(false)
-                             .message("키워드를 선택하세요.")
-                             .build();
-    }
 
-    Optional<Post> optionalPost = postRepository.findById(id);
-    if (optionalPost.isEmpty()) {
-      return PostUpdateResDto.builder()
-                             .status(false)
-                             .message("해당 게시글이 없습니다.")
-                             .build();
-    }
-
-    Post post = optionalPost.get();
+    Post post = findPostById(id);
 
     post.update(parameter);
 
@@ -164,11 +143,11 @@ public class PostService {
     if (optionalPost.isEmpty()) {
       return PostDeleteResDto.builder()
                              .status(false)
-                             .message("해당 게시글이 없습니다.")
+                             .message("이미 삭제된 게시글입니다.")
                              .build();
     }
 
-    // 게시글 삭제하기 전에 외래키때문에 외래키들을 모두 제거해야한다.
+    // 게시글 삭제하기 전에 외래키들을 모두 제거해야한다.
     Post post = optionalPost.get();
 
     // 게시글에 달린 댓글들 찾기
@@ -194,19 +173,12 @@ public class PostService {
                            .build();
   }
 
+  @Transactional
   public PostLikeResDto clickPostLike(Long id, String email) {
-    Optional<Post> optionalPost = postRepository.findById(id);
-    if (optionalPost.isEmpty()) {
-      return PostLikeResDto.builder()
-                           .status(false)
-                           .LikeNum(-1)
-                           .message("해당 포스트가 없습니다.")
-                           .build();
-    }
 
-    Optional<User> optionalUser = userRepository.findByEmail(email);
-    Post post = optionalPost.get();
-    User user = optionalUser.get();
+    Post post = findPostById(id);
+
+    User user = findUserByEmail(email);
 
     boolean alreadyClick = postLikeRepository.existsByPostIdAndClicker(post, user);
 
@@ -234,20 +206,22 @@ public class PostService {
   }
 
   public List<PostResDto> findAllPostByEmail(String email) {
-    Optional<User> optionalUser = userRepository.findByEmail(email);
-    if (optionalUser.isEmpty()) {
-      //
-    }
-
-    User user = optionalUser.get();
+    User user = findUserByEmail(email);
 
     List<PostResDto> postResDtoList = new ArrayList<>();
-
     List<Post> postList = postRepository.findAllByUser(user);
     for (int i = 0; i < postList.size(); i++) {
       postResDtoList.add(new PostResDto(postList.get(i)));
     }
 
     return postResDtoList;
+  }
+
+  private Post findPostById(Long id){
+    return postRepository.findById(id).orElseThrow(()->new NoPostException(Error.NO_EXISTS_POST));
+  }
+
+  private User findUserByEmail(String email){
+    return userRepository.findByEmail(email).orElseThrow(() -> new NoUserException(Error.NO_USER));
   }
 }

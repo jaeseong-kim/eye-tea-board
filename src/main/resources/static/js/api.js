@@ -223,10 +223,14 @@ var main = {
       dataType: 'json',
       contentType: 'application/json; charset=utf-8',
     }).done(function (res) {
-      alert(res.message);
-      location.href = '/post/list'
+      if(res.status){
+        alert(res.message);
+        location.href = '/post/list';
+      }else{
+        alert(res.message);
+      }
     }).fail(function (error) {
-      JSON.stringify(error);
+      alert(JSON.stringify(error));
     })
   },
 
@@ -283,6 +287,8 @@ var main = {
         alert(res.message);
         location.reload();
       }
+    }).fail(function (err) {
+      alert(JSON.stringify(err));
     })
   },
 
@@ -299,6 +305,8 @@ var main = {
         alert(res.message);
         $('#comment-like').text(res.likeNum);
       }
+    }).fail(function (err) {
+      alert(JSON.stringify(err));
     })
   },
 

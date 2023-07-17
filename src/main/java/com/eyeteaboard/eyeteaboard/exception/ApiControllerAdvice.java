@@ -1,7 +1,7 @@
 package com.eyeteaboard.eyeteaboard.exception;
 
+import com.eyeteaboard.eyeteaboard.dto.ErrorResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -28,15 +28,14 @@ public class ApiControllerAdvice {
                          .body(sb.toString());
   }
 
-  @ExceptionHandler(UsernameNotFoundException.class)
-  public ResponseEntity<String> handleUserNameNotFoundException(UsernameNotFoundException ex) {
+  @ExceptionHandler(NoCommentException.class)
+  public ResponseEntity<ErrorResponse> handleNoCommentException(NoCommentException ex){
 
-    StringBuilder sb = new StringBuilder();
-    sb.append(ex.getMessage())
-      .append("\n");
+    ErrorResponse errorResponse = new ErrorResponse(ex.getError());
 
-    return ResponseEntity.badRequest()
-                         .body(sb.toString());
+    return ResponseEntity.badRequest().body(errorResponse);
   }
+
+
 
 }

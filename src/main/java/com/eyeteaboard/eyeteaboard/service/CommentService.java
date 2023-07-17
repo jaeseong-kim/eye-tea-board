@@ -10,10 +10,14 @@ import com.eyeteaboard.eyeteaboard.entity.Comment;
 import com.eyeteaboard.eyeteaboard.entity.CommentLike;
 import com.eyeteaboard.eyeteaboard.entity.Post;
 import com.eyeteaboard.eyeteaboard.entity.User;
+import com.eyeteaboard.eyeteaboard.exception.NoCommentException;
+import com.eyeteaboard.eyeteaboard.exception.NoPostException;
+import com.eyeteaboard.eyeteaboard.exception.NoUserException;
 import com.eyeteaboard.eyeteaboard.repository.CommentLikeRepository;
 import com.eyeteaboard.eyeteaboard.repository.CommentRepository;
 import com.eyeteaboard.eyeteaboard.repository.PostRepository;
 import com.eyeteaboard.eyeteaboard.repository.UserRepository;
+import com.eyeteaboard.eyeteaboard.type.Error;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -37,13 +41,9 @@ public class CommentService {
 
   private final CommentLikeRepository commentLikeRepository;
 
-  public List<CommentResDto> findCommentList(Long postId) {
-    Optional<Post> optionalPost = postRepository.findById(postId);
-    if (optionalPost.isEmpty()) {
-      // 해당 게시글 없음
-    }
+  public List<CommentResDto> findCommentList(Long id) {
 
-    Post post = optionalPost.get();
+    Post post = findPostById(id);
 
     List<Comment> entityList = commentRepository.findAllByPostId(post);
 
@@ -57,13 +57,10 @@ public class CommentService {
   }
 
   public List<CommentResDto> findCommentsByEmail(String email) {
-    Optional<User> optionalUser = userRepository.findByEmail(email);
-    if (optionalUser.isEmpty()) {
-      //유저 없음
-    }
 
-    List<Comment> commentList = commentRepository.findAllByWriter(optionalUser.get());
+    User user = findUserByEmail(email);
 
+    List<Comment> commentList = commentRepository.findAllByWriter(user);
     List<CommentResDto> commentResDtoList = new ArrayList<>();
     for (int i = 0; i < commentList.size(); i++) {
       commentResDtoList.add(new CommentResDto(commentList.get(i)));
@@ -72,20 +69,15 @@ public class CommentService {
     return commentResDtoList;
   }
 
-  public CommentSaveResDto saveComment(CommentSaveReqDto dto, String writer) {
-    Optional<Post> optionalPost = postRepository.findById(dto.getPostId());
-    if (optionalPost.isEmpty()) {
-      // 게시글 없음
-    }
+  public CommentSaveResDto saveComment(CommentSaveReqDto dto, String email) {
 
-    Optional<User> optionalUser = userRepository.findByEmail(writer);
-    if (optionalUser.isEmpty()) {
-      // 유저 없음
-    }
+    Post post = findPostById(dto.getPostId());
+
+    User user = findUserByEmail(email);
 
     commentRepository.save(Comment.builder()
-                                  .postId(optionalPost.get())
-                                  .writer(optionalUser.get())
+                                  .postId(post)
+                                  .writer(user)
                                   .comment(dto.getComment())
                                   .likeNum(0)
                                   .build());
@@ -97,16 +89,9 @@ public class CommentService {
   }
 
   @Transactional
-  public CommentDelResDto deleteComment(Long commentId) {
-    Optional<Comment> optionalComment = commentRepository.findById(commentId);
-    if (optionalComment.isEmpty()) {
-      return CommentDelResDto.builder()
-                             .status(false)
-                             .message("해당 댓글이 없습니다.")
-                             .build();
-    }
+  public CommentDelResDto deleteComment(Long id) {
 
-    Comment comment = optionalComment.get();
+    Comment comment = findCommentById(id);
 
     // 삭제할 댓글에 좋아요 삭제
     commentLikeRepository.deleteAllByCommentId(comment);
@@ -120,26 +105,20 @@ public class CommentService {
                            .build();
   }
 
-  public CommentLikeResDto clickCommentLike(Long commentId, String clicker) {
+  @Transactional
+  public CommentLikeResDto clickCommentLike(Long id, String email) {
 
-    Optional<Comment> optionalComment = commentRepository.findById(commentId);
-    if (optionalComment.isEmpty()) {
-      // 댓글이 없음
-    }
+    Comment comment = findCommentById(id);
 
-    Optional<User> optionalUser = userRepository.findByEmail(clicker);
-    if (optionalComment.isEmpty()) {
-      // 유저가 없음
-    }
-
-    Comment comment = optionalComment.get();
+    User user = findUserByEmail(email);
 
     commentLikeRepository.save(CommentLike.builder()
                                           .commentId(comment)
-                                          .clicker(optionalUser.get())
+                                          .clicker(user)
                                           .build());
 
     int likeNum = commentLikeRepository.countByCommentId(comment);
+
     comment.updateLikeNum(likeNum);
 
     return CommentLikeResDto.builder()
@@ -150,16 +129,13 @@ public class CommentService {
   }
 
   public Page<CommentResDto> getPageCommentsByEmail(int page, String email) {
-    Optional<User> optionalUser = userRepository.findByEmail(email);
-    if (optionalUser.isEmpty()) {
 
-    }
+    User user = findUserByEmail(email);
 
     final int SIZE_PER_PAGE = 10;
 
     Pageable pageable = PageRequest.of(page, SIZE_PER_PAGE);
 
-    User user = optionalUser.get();
     return commentRepository.findAllByWriterOrderByCommentIdDesc(pageable, user)
                             .map(CommentResDto::new);
   }
@@ -171,12 +147,18 @@ public class CommentService {
     int startPage = (((currentPage - 1) / COUNT_LIST) * COUNT_LIST + 1);
     int endPage = Math.min(startPage + COUNT_LIST - 1, page.getTotalPages());
 
-    log.info("시작 페이지 : " + startPage);
-    log.info("현재 페이지 : " + currentPage);
-    log.info("끝 페이지 : " + endPage);
-
     return new PageInfoDto(currentPage, startPage, endPage, page.hasPrevious(),
         page.hasNext());
   }
+  private User findUserByEmail(String email){
+    return userRepository.findByEmail(email).orElseThrow(() -> new NoUserException(Error.NO_USER));
+  }
 
+  private Post findPostById(Long id){
+    return postRepository.findById(id).orElseThrow(() -> new NoPostException(Error.NO_EXISTS_POST));
+  }
+
+  private Comment findCommentById(Long id){
+    return commentRepository.findById(id).orElseThrow(() -> new NoCommentException(Error.NO_COMMENT));
+  }
 }

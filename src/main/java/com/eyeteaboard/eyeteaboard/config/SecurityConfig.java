@@ -65,7 +65,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     // 접근 권한 설정
     http.authorizeRequests()
         .antMatchers("/", "/justlogin", "/user/**", "/post/list/**", "/post/view/**",
-            "/h2-console/**","/profile","/admin/**")
+            "/h2-console/**","/profile","/admin/**","error")
         .permitAll()
         .antMatchers("/post/save", "/post/update/**", "/post/like/**", "/post/delete/**",
             "/comment/**")

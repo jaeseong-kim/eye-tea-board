@@ -15,12 +15,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class IndexController {
 
+  /**
+   * 메인화면 페이지를 반환합니다.
+   * @return index
+   */
   @GetMapping("/")
   public String index() {
 
     return "index";
   }
 
+  /**
+   * 로그인 페이지를 반환합니다. 로그인에 실패했을 경우 error는 true가 되고 exception에
+   * 에러 메시지가 담깁니다.
+   * @param error false or true
+   * @param exception 에러 메시지
+   * @return login
+   */
   @GetMapping("/justlogin")
   public String login(Model model,
       @RequestParam(name = "error", required = false) boolean error,
@@ -32,6 +43,12 @@ public class IndexController {
     return "login";
   }
 
+  /**
+   * 간편 로그인 실패 페이지를 반환합니다.
+   * @param error true or false
+   * @param exception 에러 메시지
+   * @return oauth-fail
+   */
   @GetMapping("/oauth-fail")
   public String oauthLoginFail(Model model,
       @RequestParam(name="error", required = false) boolean error,

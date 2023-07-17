@@ -26,15 +26,24 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each=" user : ${list}">
-      <td th:text="${user.getEmail()}"></td>
-      <td><a th:href="@{/admin/users/{email}(email=${user.getEmail()})}" role="button"
-             class="btn btn-secondary btn-sm">관리</a></td>
-      <td><a th:href="@{/admin/posts/{email}(email=${user.getEmail()})}" role="button"
-             class="btn btn-secondary btn-sm">게시글</a></td>
-      <td><a th:href="@{/admin/comments/{email}(email=${user.getEmail()})}" role="button"
-             class="btn btn-secondary btn-sm">댓글</a></td>
-    </tr>
+    <div th:if="${list != null}">
+      <tr th:each=" user : ${list}">
+        <td th:text="${user.getEmail()}"></td>
+        <td><a th:href="@{/admin/users/{email}(email=${user.getEmail()})}" role="button"
+               class="btn btn-secondary btn-sm">관리</a></td>
+        <td><a th:href="@{/admin/posts/{email}(email=${user.getEmail()})}" role="button"
+               class="btn btn-secondary btn-sm">게시글</a></td>
+        <td><a th:href="@{/admin/comments/{email}(email=${user.getEmail()})}" role="button"
+               class="btn btn-secondary btn-sm">댓글</a></td>
+      </tr>
+    </div>
+    <div th:unless="${list != null}">
+      <tr>
+        <td colspan="4">
+          해당 유저가 존재하지 않습니다.
+        </td>
+      </tr>
+    </div>
     </tbody>
   </table>
 </div>

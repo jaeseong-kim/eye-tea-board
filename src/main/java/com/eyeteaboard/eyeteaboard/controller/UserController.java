@@ -27,11 +27,20 @@ public class UserController {
 
   private final CommentService commentService;
 
+  /**
+   * 회원가입 페이지를 반환합니다.
+   * @return user/register
+   */
   @GetMapping("/user/register")
   public String register() {
     return "user/register";
   }
 
+  /**
+   * 간편 로그인 추가 개인정보 등록 페이지를 반환합니다.
+   * @param email 사용자 이메일
+   * @return user/oauth-register
+   */
   @GetMapping("/user/oauth-register")
   public String oauthRegister(Model model, @RequestParam String email) {
 
@@ -40,22 +49,33 @@ public class UserController {
     return "user/oauth-register";
   }
 
-
+  /**
+   * 이메일 인증 확인 후, 완료 페이지를 반환합니다.
+   * @param authKey 이메일 인증키
+   * @return user/auth
+   */
   @GetMapping("/user/auth/{authKey}")
   public String emailAuth(Model model, @PathVariable(value = "authKey") String authKey) {
-
-    log.info("authKey : " + authKey);
 
     model.addAttribute("response", userService.authEmail(authKey));
 
     return "user/auth";
   }
 
+  /**
+   * 마이 페이지를 반환합니다.
+   * @return user/my-page
+   */
   @GetMapping("/user/my-page")
   public String myPage() {
     return "user/my-page";
   }
 
+  /**
+   * 사용자를 찾은 후, 개인정보 수정 페이지를 반환합니다.
+   * @param email 사용자 이메일
+   * @return user/edit-info
+   */
   @GetMapping("/user/my-page/edit/{email}")
   public String editProfile(Model model, @PathVariable String email) {
 
@@ -65,6 +85,12 @@ public class UserController {
     return "user/edit-info";
   }
 
+  /**
+   * 내가 쓴 게시물 리스트 페이지를 반환합니다.
+   * @param email 사용자 이메일
+   * @param page 페이지 번호
+   * @return user/my-posts
+   */
   @GetMapping("/user/my-page/posts/{email}")
   public String myPostPage(Model model, @PathVariable String email,
       @RequestParam(defaultValue = "0") int page) {
@@ -80,6 +106,12 @@ public class UserController {
     return "user/my-posts";
   }
 
+  /**
+   * 내가 쓴 댓글 리스트 페이지를 반환합니다.
+   * @param email 사용자 이메일
+   * @param page 페이지 번호
+   * @return user/my-comments
+   */
   @GetMapping("/user/my-page/comments/{email}")
   public String myCommentPage(Model model, @PathVariable String email,
       @RequestParam(defaultValue = "0") int page) {

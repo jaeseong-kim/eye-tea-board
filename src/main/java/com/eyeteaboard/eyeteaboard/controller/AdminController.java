@@ -21,10 +21,14 @@ public class AdminController {
   private final UserService userService;
   private final PostService postService;
 
+  /**
+   * 관리자 전용 페이지를 반환합니다. 기본적으로 모든 회원 리스트를 출력합니다.
+   * @param email 검색할 때 사용되는 사용자 이메일
+   * @return admin/main
+   */
   @GetMapping("/admin")
   public String admin(Model model, @RequestParam(required = false) String email) {
 
-    log.info("찾을 이메일 : " + email);
     if (email != null) {
       model.addAttribute("list", userService.findUser(email));
     } else {
@@ -34,18 +38,33 @@ public class AdminController {
     return "admin/main";
   }
 
+  /**
+   * 사용자의 개인정보 페이지를 반환합니다.
+   * @param email 사용자 이메일
+   * @return
+   */
   @GetMapping("/admin/users/{email}")
   public String userInfo(Model model, @PathVariable String email) {
     model.addAttribute("user", userService.findUserInfo(email));
     return "admin/userInfo";
   }
 
+  /**
+   * 사용자의 게시글 리스트 페이지를 반환합니다.
+   * @param email 사용자 이메일
+   * @return admin/posts
+   */
   @GetMapping("/admin/posts/{email}")
   public String posts(Model model, @PathVariable String email){
     model.addAttribute("posts", postService.findAllPostByEmail(email));
     return "admin/posts";
   }
 
+  /**
+   * 사용자의 댓글 리스트를 반환합니다.
+   * @param email
+   * @return
+   */
   @GetMapping("/admin/comments/{email}")
   public String comments(Model model, @PathVariable String email){
     model.addAttribute("comments",commentService.findCommentsByEmail(email));

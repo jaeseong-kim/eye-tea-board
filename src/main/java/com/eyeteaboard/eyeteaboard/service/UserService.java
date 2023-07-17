@@ -14,6 +14,7 @@ import com.eyeteaboard.eyeteaboard.dto.RegisterResDto;
 import com.eyeteaboard.eyeteaboard.dto.UserInfoUpdateReqDto;
 import com.eyeteaboard.eyeteaboard.dto.UserInfoUpdateResDto;
 import com.eyeteaboard.eyeteaboard.entity.User;
+import com.eyeteaboard.eyeteaboard.exception.NoUserException;
 import com.eyeteaboard.eyeteaboard.repository.UserRepository;
 import com.eyeteaboard.eyeteaboard.type.Error;
 import java.util.ArrayList;
@@ -57,29 +58,8 @@ public class UserService implements UserDetailsService {
                            .build();
     }
 
-    // 이메일 형식 검사
-    String emailRegex = "^[a-zA-Z0-9-_]+@[a-zA-Z0-9-_]+\\.[a-zA-Z]+(\\.[a-zA-Z]+)?$";
-    if (!parameter.getEmail()
-                  .matches(emailRegex)) {
-      return RegisterResDto.builder()
-                           .status(false)
-                           .message("이메일 형식이 올바르지 않습니다.")
-                           .build();
-    }
-
-    // 생년월일 형식 검사
-    String birthRegex = "^[0-9]{4}-[0-9]{2}-[0-9]{2}$";
-    if (!parameter.getBirth()
-                  .matches(birthRegex)) {
-      return RegisterResDto.builder()
-                           .status(false)
-                           .message("생년월일 형식이 올바르지 않습니다. ex) 2023년 6월 12일 -> 2023-06-12")
-                           .build();
-    }
-
     // 이메일 인증키 생성
-    String uuid = UUID.randomUUID()
-                      .toString();
+    String uuid = UUID.randomUUID().toString();
     parameter.insertAuthKey(uuid);
 
     // 비밀번호 암호화
@@ -122,7 +102,6 @@ public class UserService implements UserDetailsService {
   public AuthResDto authEmail(String uuid) {
     Optional<User> optionalUser = userRepository.findByAuthKey(uuid);
     if (optionalUser.isEmpty()) {
-      log.info(uuid);
       return AuthResDto.builder()
                        .status(false)
                        .message("유효하지 않은 인증키입니다.")
@@ -148,17 +127,10 @@ public class UserService implements UserDetailsService {
 
   @Transactional
   public OAuthRegisterResDto oauthRegister(OAuthRegisterReqDto parameter) {
-    Optional<User> optionalUser = userRepository.findByEmail(parameter.getEmail());
-    if (optionalUser.isEmpty()) {
-      return OAuthRegisterResDto.builder()
-                                .status(false)
-                                .message("해당 유저가 없습니다.")
-                                .build();
-    }
 
-    User user = optionalUser.get();
+    User user = findUserByEmail(parameter.getEmail());
 
-    //더티체킹
+    // 더티체킹
     user.registerOAuthGuest(parameter);
 
     return OAuthRegisterResDto.builder()
@@ -192,16 +164,19 @@ public class UserService implements UserDetailsService {
     }
 
     return adminAllUserDtoList;
-
   }
 
+  /**
+   * 유저를 찾는 메소드입니다.
+   * @param email 찾을 유저의 이메일
+   * @return List<AdminFindUserDto>로 반환
+   */
   public List<AdminFindUserDto> findUser(String email) {
-    Optional<User> optionalUser = userRepository.findByEmail(email);
-    if (optionalUser.isEmpty()) {
+    User user = userRepository.findByEmail(email).orElse(null);
+    if (user == null) {
       return null;
     }
 
-    User user = optionalUser.get();
     List<AdminFindUserDto> adminFindUserDtoList = new ArrayList<>();
     adminFindUserDtoList.add(AdminFindUserDto.builder()
                                              .email(user.getEmail())
@@ -210,30 +185,21 @@ public class UserService implements UserDetailsService {
     return adminFindUserDtoList;
   }
 
-
   public UserInfoDto findUserInfo(String email) {
-    Optional<User> optionalUser = userRepository.findByEmail(email);
-    if (optionalUser.isEmpty()) {
-      return null;
-    }
 
-    return new UserInfoDto(optionalUser.get());
+    User user = findUserByEmail(email);
+
+    return new UserInfoDto(user);
   }
 
 
   @Transactional
   public AdminBanUserResDto changeUserStatus(String email) {
-    Optional<User> optionalUser = userRepository.findByEmail(email);
-    if (optionalUser.isEmpty()) {
-      return AdminBanUserResDto.builder()
-                               .status(false)
-                               .message("유저가 없습니다.")
-                               .build();
-    }
 
-    User user = optionalUser.get();
+    User user = findUserByEmail(email);
 
-    if (user.isBan()) {
+    if (user.banned()) {
+
       user.stopBan();
 
       return AdminBanUserResDto.builder()
@@ -252,22 +218,18 @@ public class UserService implements UserDetailsService {
 
   @Transactional
   public PasswordUpdateResDto updatePassword(PasswordUpdateReqDto parameter) {
-    Optional<User> optionalUser = userRepository.findByEmail(parameter.getEmail());
-    if (optionalUser.isEmpty()) {
-      //
-    }
 
-    String rawPassword = parameter.getPassword();
-    log.info("rawPassword : " + rawPassword + ", rePassword : " + parameter.getRepassword());
-    if (!rawPassword.equals(parameter.getRepassword())) {
+    if (!parameter.checkPassword()) {
       return PasswordUpdateResDto.builder()
                                  .result(false)
                                  .message("비밀번호가 일치하지 않습니다.")
                                  .build();
     }
 
-    User user = optionalUser.get();
-    String encPassword = passwordEncoder.encode(rawPassword);
+    User user = findUserByEmail(parameter.getEmail());
+
+    String encPassword = passwordEncoder.encode(parameter.getPassword());
+
     user.updatePassword(encPassword);
 
     return PasswordUpdateResDto.builder()
@@ -278,12 +240,8 @@ public class UserService implements UserDetailsService {
 
   @Transactional
   public UserInfoUpdateResDto updateProfile(UserInfoUpdateReqDto parameter) {
-    Optional<User> optionalUser = userRepository.findByEmail(parameter.getEmail());
-    if (optionalUser.isEmpty()) {
-      //
-    }
 
-    User user = optionalUser.get();
+    User user = findUserByEmail(parameter.getEmail());
 
     user.updateProfile(parameter.getAddress(), parameter.getDetailAddress());
 
@@ -293,4 +251,8 @@ public class UserService implements UserDetailsService {
                                .build();
   }
 
+  private User findUserByEmail(String email) {
+    return userRepository.findByEmail(email)
+                         .orElseThrow(() -> new NoUserException(Error.NO_USER));
+  }
 }

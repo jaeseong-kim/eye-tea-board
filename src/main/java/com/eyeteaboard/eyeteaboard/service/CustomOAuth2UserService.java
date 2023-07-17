@@ -46,7 +46,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     // userRepo에 저장
     User user = saveOrUpdate(attributes);
 
-    if (user.isBan()) {
+    if (user.banned()) {
       throw new LockedException(Error.BANNED_USER.getMessage());
     }
 

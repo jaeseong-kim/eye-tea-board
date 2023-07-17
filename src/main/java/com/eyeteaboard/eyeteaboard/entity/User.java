@@ -85,8 +85,7 @@ public class User {
   }
 
   public void registerOAuthGuest(OAuthRegisterReqDto dto) {
-    this.password = UUID.randomUUID()
-                        .toString();
+    this.password = UUID.randomUUID().toString();
     this.birth = dto.getBirth();
     this.address = dto.getAddress();
     this.detailAddress = dto.getDetailAddress();
@@ -94,11 +93,8 @@ public class User {
     this.role = Role.USER;
   }
 
-  public boolean isBan() {
-    if (this.status) {
-      return false;
-    }
-    return true;
+  public boolean banned() {
+    return !this.status;
   }
 
   public void ban() {

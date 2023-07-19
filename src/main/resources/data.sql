@@ -1,7 +1,19 @@
 
 -- 회원 데이터
 INSERT INTO user VALUES
-('doctorwho123@naver.com','경기 고양시 일산서구 킨텍스로 171','2023-07-05 21:44:55.390475','3aa151b3-780a-44f9-bfd3-cffff9a62088',TRUE,'1999-01-01','1','OUR_SERVICE','김재성','$2a$10$dVrJfXV5i/ribtkSdH.xoeqkUX0rrf5HNKwlnf.JxfWZzk6BQr0Ze','2023-07-05 21:44:37.599583','USER',TRUE);
+('doctorwho123@naver.com','경기 고양시 일산서구 킨텍스로 171','2023-07-05 21:44:55.390475','3aa151b3-780a-44f9-bfd3-cffff9a62088',TRUE,'1999-01-01','1','OUR_SERVICE','김재성','$2a$10$dVrJfXV5i/ribtkSdH.xoeqkUX0rrf5HNKwlnf.JxfWZzk6BQr0Ze','2023-07-05 21:44:37.599583','USER',TRUE),
+('aaa','경기 고양시 일산서구 킨텍스로 171','2023-07-05 21:44:55.390475','3aa151b3-780a-44f9-bfd3-cffff9a62088',TRUE,'1999-01-01','1','OUR_SERVICE','김재성','$2a$10$dVrJfXV5i/ribtkSdH.xoeqkUX0rrf5HNKwlnf.JxfWZzk6BQr0Ze','2023-07-05 21:44:37.599583','USER',TRUE),
+('bbb','경기 고양시 일산서구 킨텍스로 171','2023-07-05 21:44:55.390475','3aa151b3-780a-44f9-bfd3-cffff9a62088',TRUE,'1999-01-01','1','OUR_SERVICE','김재성','$2a$10$dVrJfXV5i/ribtkSdH.xoeqkUX0rrf5HNKwlnf.JxfWZzk6BQr0Ze','2023-07-05 21:44:37.599583','USER',TRUE),
+('ccc','경기 고양시 일산서구 킨텍스로 171','2023-07-05 21:44:55.390475','3aa151b3-780a-44f9-bfd3-cffff9a62088',TRUE,'1999-01-01','1','OUR_SERVICE','김재성','$2a$10$dVrJfXV5i/ribtkSdH.xoeqkUX0rrf5HNKwlnf.JxfWZzk6BQr0Ze','2023-07-05 21:44:37.599583','USER',TRUE),
+('ddd','경기 고양시 일산서구 킨텍스로 171','2023-07-05 21:44:55.390475','3aa151b3-780a-44f9-bfd3-cffff9a62088',TRUE,'1999-01-01','1','OUR_SERVICE','김재성','$2a$10$dVrJfXV5i/ribtkSdH.xoeqkUX0rrf5HNKwlnf.JxfWZzk6BQr0Ze','2023-07-05 21:44:37.599583','USER',TRUE),
+('eee','경기 고양시 일산서구 킨텍스로 171','2023-07-05 21:44:55.390475','3aa151b3-780a-44f9-bfd3-cffff9a62088',TRUE,'1999-01-01','1','OUR_SERVICE','김재성','$2a$10$dVrJfXV5i/ribtkSdH.xoeqkUX0rrf5HNKwlnf.JxfWZzk6BQr0Ze','2023-07-05 21:44:37.599583','USER',TRUE),
+('fff','경기 고양시 일산서구 킨텍스로 171','2023-07-05 21:44:55.390475','3aa151b3-780a-44f9-bfd3-cffff9a62088',TRUE,'1999-01-01','1','OUR_SERVICE','김재성','$2a$10$dVrJfXV5i/ribtkSdH.xoeqkUX0rrf5HNKwlnf.JxfWZzk6BQr0Ze','2023-07-05 21:44:37.599583','USER',TRUE),
+('ggg','경기 고양시 일산서구 킨텍스로 171','2023-07-05 21:44:55.390475','3aa151b3-780a-44f9-bfd3-cffff9a62088',TRUE,'1999-01-01','1','OUR_SERVICE','김재성','$2a$10$dVrJfXV5i/ribtkSdH.xoeqkUX0rrf5HNKwlnf.JxfWZzk6BQr0Ze','2023-07-05 21:44:37.599583','USER',TRUE),
+('hhh','경기 고양시 일산서구 킨텍스로 171','2023-07-05 21:44:55.390475','3aa151b3-780a-44f9-bfd3-cffff9a62088',TRUE,'1999-01-01','1','OUR_SERVICE','김재성','$2a$10$dVrJfXV5i/ribtkSdH.xoeqkUX0rrf5HNKwlnf.JxfWZzk6BQr0Ze','2023-07-05 21:44:37.599583','USER',TRUE),
+('iii','경기 고양시 일산서구 킨텍스로 171','2023-07-05 21:44:55.390475','3aa151b3-780a-44f9-bfd3-cffff9a62088',TRUE,'1999-01-01','1','OUR_SERVICE','김재성','$2a$10$dVrJfXV5i/ribtkSdH.xoeqkUX0rrf5HNKwlnf.JxfWZzk6BQr0Ze','2023-07-05 21:44:37.599583','USER',TRUE),
+('jjj','경기 고양시 일산서구 킨텍스로 171','2023-07-05 21:44:55.390475','3aa151b3-780a-44f9-bfd3-cffff9a62088',TRUE,'1999-01-01','1','OUR_SERVICE','김재성','$2a$10$dVrJfXV5i/ribtkSdH.xoeqkUX0rrf5HNKwlnf.JxfWZzk6BQr0Ze','2023-07-05 21:44:37.599583','USER',TRUE),
+('kkk','경기 고양시 일산서구 킨텍스로 171','2023-07-05 21:44:55.390475','3aa151b3-780a-44f9-bfd3-cffff9a62088',TRUE,'1999-01-01','1','OUR_SERVICE','김재성','$2a$10$dVrJfXV5i/ribtkSdH.xoeqkUX0rrf5HNKwlnf.JxfWZzk6BQr0Ze','2023-07-05 21:44:37.599583','USER',TRUE),
+('lll','경기 고양시 일산서구 킨텍스로 171','2023-07-05 21:44:55.390475','3aa151b3-780a-44f9-bfd3-cffff9a62088',TRUE,'1999-01-01','1','OUR_SERVICE','김재성','$2a$10$dVrJfXV5i/ribtkSdH.xoeqkUX0rrf5HNKwlnf.JxfWZzk6BQr0Ze','2023-07-05 21:44:37.599583','USER',TRUE);
 
 -- 게시글 데이터
 INSERT INTO post VALUES

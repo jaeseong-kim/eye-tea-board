@@ -79,13 +79,9 @@ public class PostService {
   }
 
   public Page<PostListResDto> getPagePostsByEmail(int page, String email) {
-    // 2
-    Optional<User> optionalUser = userRepository.findByEmail(email);
-    if(optionalUser.isEmpty()){
 
-    }
+    User user = findUserByEmail(email);
 
-    User user = optionalUser.get();
     Pageable pageable = PageRequest.of(page, SIZE_PER_PAGE);
 
     return postRepository.findAllByUserOrderByPostIdDesc(pageable, user).map(PostListResDto::new);
@@ -139,16 +135,9 @@ public class PostService {
 
   @Transactional
   public PostDeleteResDto deletePost(Long id) {
-    Optional<Post> optionalPost = postRepository.findById(id);
-    if (optionalPost.isEmpty()) {
-      return PostDeleteResDto.builder()
-                             .status(false)
-                             .message("이미 삭제된 게시글입니다.")
-                             .build();
-    }
 
     // 게시글 삭제하기 전에 외래키들을 모두 제거해야한다.
-    Post post = optionalPost.get();
+    Post post = findPostById(id);
 
     // 게시글에 달린 댓글들 찾기
     List<Comment> comments = commentRepository.findAllByPostId(post);
@@ -196,6 +185,7 @@ public class PostService {
                                     .build());
 
     int likeNum = postLikeRepository.countAllByPostId(post);
+
     post.updateLikeNum(likeNum);
 
     return PostLikeResDto.builder()
@@ -203,18 +193,6 @@ public class PostService {
                          .LikeNum(likeNum)
                          .message("좋아요를 눌렀습니다.")
                          .build();
-  }
-
-  public List<PostResDto> findAllPostByEmail(String email) {
-    User user = findUserByEmail(email);
-
-    List<PostResDto> postResDtoList = new ArrayList<>();
-    List<Post> postList = postRepository.findAllByUser(user);
-    for (int i = 0; i < postList.size(); i++) {
-      postResDtoList.add(new PostResDto(postList.get(i)));
-    }
-
-    return postResDtoList;
   }
 
   private Post findPostById(Long id){

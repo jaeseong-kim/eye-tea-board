@@ -1,30 +1,32 @@
 package com.eyeteaboard.eyeteaboard.service;
 
 import com.eyeteaboard.eyeteaboard.config.CustomUserDetails;
-import com.eyeteaboard.eyeteaboard.dto.PasswordUpdateResDto;
 import com.eyeteaboard.eyeteaboard.dto.AdminBanUserResDto;
 import com.eyeteaboard.eyeteaboard.dto.AdminFindUserDto;
-import com.eyeteaboard.eyeteaboard.dto.PasswordUpdateReqDto;
-import com.eyeteaboard.eyeteaboard.dto.UserInfoDto;
 import com.eyeteaboard.eyeteaboard.dto.AuthResDto;
 import com.eyeteaboard.eyeteaboard.dto.OAuthRegisterReqDto;
 import com.eyeteaboard.eyeteaboard.dto.OAuthRegisterResDto;
+import com.eyeteaboard.eyeteaboard.dto.PageInfoDto;
+import com.eyeteaboard.eyeteaboard.dto.PasswordUpdateReqDto;
+import com.eyeteaboard.eyeteaboard.dto.PasswordUpdateResDto;
 import com.eyeteaboard.eyeteaboard.dto.RegisterReqDto;
 import com.eyeteaboard.eyeteaboard.dto.RegisterResDto;
+import com.eyeteaboard.eyeteaboard.dto.UserInfoDto;
 import com.eyeteaboard.eyeteaboard.dto.UserInfoUpdateReqDto;
 import com.eyeteaboard.eyeteaboard.dto.UserInfoUpdateResDto;
 import com.eyeteaboard.eyeteaboard.entity.User;
 import com.eyeteaboard.eyeteaboard.exception.NoUserException;
 import com.eyeteaboard.eyeteaboard.repository.UserRepository;
 import com.eyeteaboard.eyeteaboard.type.Error;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -38,6 +40,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Service
 public class UserService implements UserDetailsService {
+
+  private final int SIZE_PER_PAGE = 10;
 
   private final String LOCAL_ADDRESS = "http://localhost:8080";
 
@@ -152,37 +156,41 @@ public class UserService implements UserDetailsService {
     return new CustomUserDetails(user);
   }
 
-  public List<AdminFindUserDto> findAllUser() {
-    List<User> userList = userRepository.findAll();
+  public Page<AdminFindUserDto> findAllUser(int page) {
 
-    List<AdminFindUserDto> adminAllUserDtoList = new ArrayList<>();
-    for (int i = 0; i < userList.size(); i++) {
-      User user = userList.get(i);
-      adminAllUserDtoList.add(AdminFindUserDto.builder()
-                                              .email(user.getEmail())
-                                              .build());
-    }
+    Pageable pageable = PageRequest.of(page, SIZE_PER_PAGE);
 
-    return adminAllUserDtoList;
+    return userRepository.findAll(pageable)
+                         .map(AdminFindUserDto::new);
   }
 
   /**
    * 유저를 찾는 메소드입니다.
+   *
    * @param email 찾을 유저의 이메일
    * @return List<AdminFindUserDto>로 반환
    */
-  public List<AdminFindUserDto> findUser(String email) {
+  public Page<AdminFindUserDto> findUser(String email, int page) {
     User user = userRepository.findByEmail(email).orElse(null);
     if (user == null) {
       return null;
     }
 
-    List<AdminFindUserDto> adminFindUserDtoList = new ArrayList<>();
-    adminFindUserDtoList.add(AdminFindUserDto.builder()
-                                             .email(user.getEmail())
-                                             .build());
+    Pageable pageable = PageRequest.of(page, SIZE_PER_PAGE);
 
-    return adminFindUserDtoList;
+    return userRepository.findByEmail(email, pageable).map(AdminFindUserDto::new);
+  }
+
+  public PageInfoDto getPageInfo(Page<AdminFindUserDto> page){
+
+    final int COUNT_LIST = 5;
+
+    int currentPage = page.getNumber() + 1;
+    int startPage = (((currentPage - 1) / COUNT_LIST) * COUNT_LIST + 1);
+    int endPage = Math.min(startPage + COUNT_LIST - 1, page.getTotalPages());
+
+    return new PageInfoDto(currentPage, startPage, endPage, page.hasPrevious(),
+        page.hasNext());
   }
 
   public UserInfoDto findUserInfo(String email) {

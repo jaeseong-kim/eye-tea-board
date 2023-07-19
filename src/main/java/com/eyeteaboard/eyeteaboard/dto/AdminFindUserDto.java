@@ -1,17 +1,15 @@
 package com.eyeteaboard.eyeteaboard.dto;
 
-import lombok.Builder;
+import com.eyeteaboard.eyeteaboard.entity.User;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 @Getter
 public class AdminFindUserDto {
 
   private String email;
 
-  @Builder
-  public AdminFindUserDto(String email){
-    this.email = email;
+  public AdminFindUserDto(User user) {
+    this.email = user.getEmail();
   }
+
 }

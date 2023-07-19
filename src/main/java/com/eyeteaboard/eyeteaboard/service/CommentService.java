@@ -33,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Service
 public class CommentService {
+  private final int SIZE_PER_PAGE = 10;
 
   private final UserRepository userRepository;
 
@@ -54,19 +55,6 @@ public class CommentService {
     }
 
     return dtoList;
-  }
-
-  public List<CommentResDto> findCommentsByEmail(String email) {
-
-    User user = findUserByEmail(email);
-
-    List<Comment> commentList = commentRepository.findAllByWriter(user);
-    List<CommentResDto> commentResDtoList = new ArrayList<>();
-    for (int i = 0; i < commentList.size(); i++) {
-      commentResDtoList.add(new CommentResDto(commentList.get(i)));
-    }
-
-    return commentResDtoList;
   }
 
   public CommentSaveResDto saveComment(CommentSaveReqDto dto, String email) {

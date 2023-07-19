@@ -1,6 +1,7 @@
-package com.eyeteaboard.eyeteaboard.exception;
+package com.eyeteaboard.eyeteaboard.exception.handler;
 
 import com.eyeteaboard.eyeteaboard.dto.ErrorResponse;
+import com.eyeteaboard.eyeteaboard.exception.NoCommentException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class ApiControllerAdvice {
+public class ApiExceptionAdivce {
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<String> handleValidationException(

@@ -406,7 +406,7 @@ var main = {
     }).done(function (res) {
       if (res.result) {
         alert(res.message);
-        location.href = '/user/mypage/' + email;
+        location.href = '/user/my-page';
       }
     })
   }

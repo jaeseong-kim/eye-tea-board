@@ -126,7 +126,7 @@ public class UserController {
    * @param page  페이지 번호
    * @return user/my-comments
    */
-  @PreAuthorize("authentication == #email")
+  @PreAuthorize("authentication.name == #email")
   @GetMapping("/my-page/comments/{email}")
   public String myCommentPage(Model model, @PathVariable String email,
       @RequestParam(defaultValue = "0") int page) {

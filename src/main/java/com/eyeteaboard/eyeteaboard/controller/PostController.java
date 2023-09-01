@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/post")
 @Controller
 public class PostController {
 
@@ -32,7 +31,7 @@ public class PostController {
    *
    * @return post/save-post
    */
-  @GetMapping("/save")
+  @GetMapping("/post/save")
   public String postSave() {
     return "post/save-post";
   }
@@ -45,7 +44,7 @@ public class PostController {
    * @param sort     게시글 정렬 키워드
    * @return list
    */
-  @GetMapping(value = {"/list/{category}", "/list"})
+  @GetMapping(value = {"/post/list/{category}", "/post/list"})
   public String list(Model model, @PathVariable(required = false) Category category,
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "postId") String sort) {
@@ -71,7 +70,7 @@ public class PostController {
    * @param id 게시글 번호
    * @return post/view-post
    */
-  @GetMapping("/view/{id}")
+  @GetMapping("/post/view/{id}")
   public String viewPost(Model model, @PathVariable Long id) {
     model.addAttribute("post", postService.findViewPost(id));
     model.addAttribute("comments", commentService.findCommentList(id));
@@ -84,7 +83,7 @@ public class PostController {
    * @param id 수정할 게시글 번호
    * @return post/update-post
    */
-  @GetMapping("/update/{id}")
+  @GetMapping("/post/update/{id}")
   public String updatePost(Model model, @PathVariable Long id) {
 
     model.addAttribute("post", postService.findUpdatePost(id));

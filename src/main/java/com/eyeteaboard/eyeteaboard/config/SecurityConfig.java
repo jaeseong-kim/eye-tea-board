@@ -72,6 +72,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .permitAll()
         .mvcMatchers("/post/save", "/post/update/**", "/post/like/**", "/post/delete/**",
             "/comment/**")
-        .hasAuthority(Role.USER.getKey());
+        .hasAnyAuthority(Role.USER.getKey(),Role.ADMIN.getKey());
   }
 }

@@ -1,5 +1,5 @@
 env:
-  S3_BUCKET_NAME: eyeteaboard
+  S3_BUCKET_NAME: my--s3
   PROJECT_NAME: eye-tea-board
   CODE_DEPLOY_APP_NAME: eyeteaboard
   CODE_DEPLOY_GROUP_NAME: eyeteaboard-group

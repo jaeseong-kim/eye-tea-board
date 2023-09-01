@@ -10,6 +10,9 @@ public class PostUpdateReqDto {
   @NotBlank(message = "제목을 입력하세요.")
   private String title;
 
+  @NotBlank(message = "작성자가 존재하지 않습니다.")
+  private String writer;
+
   @NotNull(message = "카테고리를 선택하세요.")
   private String category;
 

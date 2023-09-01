@@ -10,14 +10,19 @@ import com.eyeteaboard.eyeteaboard.type.Login;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Slf4j
 @RequiredArgsConstructor
+@RequestMapping("/user")
 @Controller
 public class UserController {
 
@@ -29,19 +34,21 @@ public class UserController {
 
   /**
    * 회원가입 페이지를 반환합니다.
+   *
    * @return user/register
    */
-  @GetMapping("/user/register")
+  @GetMapping("/register")
   public String register() {
     return "user/register";
   }
 
   /**
    * 간편 로그인 추가 개인정보 등록 페이지를 반환합니다.
+   *
    * @param email 사용자 이메일
    * @return user/oauth-register
    */
-  @GetMapping("/user/oauth-register")
+  @GetMapping("/oauth-register")
   public String oauthRegister(Model model, @RequestParam String email) {
 
     model.addAttribute("email", email);
@@ -51,10 +58,11 @@ public class UserController {
 
   /**
    * 이메일 인증 확인 후, 완료 페이지를 반환합니다.
+   *
    * @param authKey 이메일 인증키
    * @return user/auth
    */
-  @GetMapping("/user/auth/{authKey}")
+  @GetMapping("/auth/{authKey}")
   public String emailAuth(Model model, @PathVariable(value = "authKey") String authKey) {
 
     model.addAttribute("response", userService.authEmail(authKey));
@@ -64,19 +72,22 @@ public class UserController {
 
   /**
    * 마이 페이지를 반환합니다.
+   *
    * @return user/my-page
    */
-  @GetMapping("/user/my-page")
+  @GetMapping("/my-page")
   public String myPage() {
     return "user/my-page";
   }
 
   /**
    * 사용자를 찾은 후, 개인정보 수정 페이지를 반환합니다.
+   *
    * @param email 사용자 이메일
    * @return user/edit-info
    */
-  @GetMapping("/user/my-page/edit/{email}")
+  @PreAuthorize("authentication.name == #email")
+  @GetMapping("/my-page/edit/{email}")
   public String editProfile(Model model, @PathVariable String email) {
 
     model.addAttribute("user", userService.findUserInfo(email));
@@ -87,11 +98,13 @@ public class UserController {
 
   /**
    * 내가 쓴 게시물 리스트 페이지를 반환합니다.
+   *
    * @param email 사용자 이메일
-   * @param page 페이지 번호
+   * @param page  페이지 번호
    * @return user/my-posts
    */
-  @GetMapping("/user/my-page/posts/{email}")
+  @PreAuthorize("authentication.name == #email")
+  @GetMapping("/my-page/posts/{email}")
   public String myPostPage(Model model, @PathVariable String email,
       @RequestParam(defaultValue = "0") int page) {
 
@@ -108,11 +121,13 @@ public class UserController {
 
   /**
    * 내가 쓴 댓글 리스트 페이지를 반환합니다.
+   *
    * @param email 사용자 이메일
-   * @param page 페이지 번호
+   * @param page  페이지 번호
    * @return user/my-comments
    */
-  @GetMapping("/user/my-page/comments/{email}")
+  @PreAuthorize("authentication.name == #email")
+  @GetMapping("/my-page/comments/{email}")
   public String myCommentPage(Model model, @PathVariable String email,
       @RequestParam(defaultValue = "0") int page) {
 
@@ -121,7 +136,7 @@ public class UserController {
     Page<CommentResDto> pageComments = commentService.getPageCommentsByEmail(page, email);
     PageInfoDto pageInfo = commentService.getPageInfoDto(pageComments);
 
-    model.addAttribute("comments", pageComments);
+    model.addAttribute("comments", pageComments.getContent());
     model.addAttribute("pageInfo", pageInfo);
 
     return "user/my-comments";

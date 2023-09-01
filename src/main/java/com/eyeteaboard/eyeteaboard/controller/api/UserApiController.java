@@ -11,12 +11,15 @@ import com.eyeteaboard.eyeteaboard.dto.UserInfoUpdateResDto;
 import com.eyeteaboard.eyeteaboard.service.UserService;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
+@RequestMapping("/user")
 @RestController
 public class UserApiController {
 
@@ -27,7 +30,7 @@ public class UserApiController {
    * @param parameter 회원가입 정보 객체
    * @return RegisterResDto
    */
-  @PostMapping("/user/register")
+  @PostMapping("/register")
   public RegisterResDto register(@RequestBody @Valid RegisterReqDto parameter) {
     return userService.register(parameter);
   }
@@ -37,7 +40,7 @@ public class UserApiController {
    * @param parameter 사용자 추가정보 객체
    * @return
    */
-  @PostMapping("/user/oauth-register")
+  @PostMapping("/oauth-register")
   public OAuthRegisterResDto oauthRegister(@RequestBody @Valid OAuthRegisterReqDto parameter){
     return userService.oauthRegister(parameter);
   }
@@ -47,7 +50,8 @@ public class UserApiController {
    * @param parameter 사용자 이메일, 비밀번호, 확인 비밀번호가 담긴 객체
    * @return
    */
-  @PutMapping("/user/update-password")
+  @PreAuthorize("authentication.name == #parameter.email")
+  @PutMapping("/update-password")
   public PasswordUpdateResDto updatePassword(@RequestBody @Valid PasswordUpdateReqDto parameter){
     return userService.updatePassword(parameter);
   }
@@ -57,7 +61,8 @@ public class UserApiController {
    * @param parameter 사용자 개인정보 객체
    * @return
    */
-  @PutMapping("/user/update-info")
+  @PreAuthorize("authentication.name == #parameter.email")
+  @PutMapping("/update-info")
   public UserInfoUpdateResDto updateProfile(@RequestBody @Valid UserInfoUpdateReqDto parameter){
     return userService.updateProfile(parameter);
   }

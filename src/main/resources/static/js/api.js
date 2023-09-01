@@ -189,6 +189,7 @@ var main = {
   update: function () {
     var data = {
       title: $('#title').val(),
+      writer : $('#writer').val(),
       category: $('input[type=radio][name=category]:checked').val(),
       content: $('#content').val()
     };
@@ -405,7 +406,7 @@ var main = {
     }).done(function (res) {
       if (res.result) {
         alert(res.message);
-        location.href = '/user/mypage/' + email;
+        location.href = '/user/my-page';
       }
     })
   }

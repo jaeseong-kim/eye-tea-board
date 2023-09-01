@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 
 @RequiredArgsConstructor
 @Configuration
@@ -25,6 +26,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
 
   private final CustomAuthFailureHandler authenticationFailureHandler;
+
+  private final CustomAccessDeniedHandler accessDeniedHandler;
 
 
 
@@ -64,10 +67,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     // 접근 권한 설정
     http.authorizeRequests()
-        .antMatchers("/", "/justlogin", "/user/**", "/post/list/**", "/post/view/**",
+        .mvcMatchers("/", "/justlogin", "/user/**", "/post/list/**", "/post/view/**",
             "/h2-console/**","/profile","/admin/**","error")
         .permitAll()
-        .antMatchers("/post/save", "/post/update/**", "/post/like/**", "/post/delete/**",
+        .mvcMatchers("/post/save", "/post/update/**", "/post/like/**", "/post/delete/**",
             "/comment/**")
         .hasAuthority(Role.USER.getKey());
   }

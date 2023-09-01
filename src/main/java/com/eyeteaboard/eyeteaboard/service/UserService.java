@@ -29,6 +29,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -192,6 +193,7 @@ public class UserService implements UserDetailsService {
     return new PageInfoDto(currentPage, startPage, endPage, page.hasPrevious(),
         page.hasNext());
   }
+
 
   public UserInfoDto findUserInfo(String email) {
 

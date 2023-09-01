@@ -10,6 +10,7 @@ import com.eyeteaboard.eyeteaboard.service.PostService;
 import java.security.Principal;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -59,12 +60,18 @@ public class PostApiController {
    * @param parameter 게시글 수정 객체
    * @return
    */
+  @PreAuthorize("authentication.name == #parameter.writer")
   @PutMapping("/update/{id}")
   public PostUpdateResDto updatePost(@PathVariable Long id,
       @RequestBody @Valid PostUpdateReqDto parameter) {
     return postService.updatePost(id, parameter);
   }
 
+  /**
+   * 게시글을 삭제하는 DELETE 요청 메소드입니다.
+   * @param id 게시글 번호
+   * @return
+   */
   @DeleteMapping("/delete/{id}")
   public PostDeleteResDto deletePost(@PathVariable Long id) {
     return postService.deletePost(id);

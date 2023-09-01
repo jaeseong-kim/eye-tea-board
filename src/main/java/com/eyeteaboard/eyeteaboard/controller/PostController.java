@@ -29,6 +29,7 @@ public class PostController {
 
   /**
    * 게시글 글쓰기 페이지를 반환합니다.
+   *
    * @return post/save-post
    */
   @GetMapping("/save")
@@ -38,12 +39,13 @@ public class PostController {
 
   /**
    * 게시글 리스트 페이지를 반환합니다.
+   *
    * @param category 게시글 카테고리 키워드
-   * @param page 게시글 페이지 번호
-   * @param sort 게시글 정렬 키워드
+   * @param page     게시글 페이지 번호
+   * @param sort     게시글 정렬 키워드
    * @return list
    */
-  @GetMapping(value = {"/list/{category}","/list"})
+  @GetMapping(value = {"/list/{category}", "/list"})
   public String list(Model model, @PathVariable(required = false) Category category,
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "postId") String sort) {
@@ -63,9 +65,9 @@ public class PostController {
     return "list";
   }
 
-
   /**
    * 특정 게시글을 반환합니다.
+   *
    * @param id 게시글 번호
    * @return post/view-post
    */
@@ -78,6 +80,7 @@ public class PostController {
 
   /**
    * 게시글 수정페이지를 반환합니다.
+   *
    * @param id 수정할 게시글 번호
    * @return post/update-post
    */

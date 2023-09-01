@@ -61,7 +61,8 @@
       <textarea class="form-control" id="content" name="content" th:text="${post.getContent()}"
                 rows="10"></textarea>
     </div>
-    <button type="button" class="btn btn-primary" id="btn-update">확인</button>
+    <input type="hidden" id="writer" name="writer" th:value="${post.getWriter()}">
+    <button type="button" class="btn btn-primary" id="btn-update">수정</button>
     <button type="button" class="btn btn-danger" id="btn-delete">삭제</button>
   </form>
 </div>

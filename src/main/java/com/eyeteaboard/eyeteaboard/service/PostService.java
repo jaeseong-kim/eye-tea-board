@@ -32,6 +32,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,11 +71,9 @@ public class PostService {
     Pageable pageable = PageRequest.of(page, SIZE_PER_PAGE, Sort.by(sort).descending());
 
     if (category == null) {
-      return postRepository.findAll(pageable)
-                           .map(PostListResDto::new);
+      return postRepository.findAll(pageable).map(PostListResDto::new);
     } else {
-      return postRepository.findAllByCategory(category, pageable)
-                           .map(PostListResDto::new);
+      return postRepository.findAllByCategory(category, pageable).map(PostListResDto::new);
     }
   }
 
@@ -117,8 +116,11 @@ public class PostService {
 
     Post post = findPostById(id);
 
+    log.info(post.getUser().getEmail());
+
     return new PostResDto(post);
   }
+
 
   @Transactional
   public PostUpdateResDto updatePost(Long id, PostUpdateReqDto parameter) {

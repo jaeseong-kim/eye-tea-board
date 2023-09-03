@@ -13,7 +13,7 @@ echo "> cp $REPOSITORY/zip/*.jar $REPOSITORY/"
 cp $REPOSITORY/zip/*.jar $REPOSITORY/
 
 echo "> 새 애플리케이션 배포"
-JAR_NAME=$(ls -tr $REPOSITORY/*.jar | tail -n 1) # -t는 최신 수정순으로 정렬, -r은 반대로 정렬
+JAR_NAME=$(ls -t $REPOSITORY/*.jar | tail -n 1) # -t는 최신 수정순으로 정렬, -r은 반대로 정렬
 
 echo "> JAR name: $JAR_NAME"
 

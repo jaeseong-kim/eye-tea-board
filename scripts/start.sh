@@ -29,6 +29,6 @@ echo "> $JAR_NAME를 profile-$IDLE_PROFILE 로 실행합니다."
 
 nohup java -jar \
   -Dspring.config.location=classpath:/application.properties,/home/ec2-user/eyeteaboard/application-mail.properties,\
-/home/ubuntu/eyeteaboard/application-oauth.properties,/home/ec2-user/eyeteaboard/application-real-db.properties,classpath:/application-$IDLE_PROFILE.properties \
+/home/ec2-user/eyeteaboard/application-oauth.properties,/home/ec2-user/eyeteaboard/application-real-db.properties,classpath:/application-$IDLE_PROFILE.properties \
 -Dspring.profiles.active=$IDLE_PROFILE \
 $JAR_NAME > $REPOSITORY/nohup.out 2>&1 &

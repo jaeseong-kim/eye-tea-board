@@ -408,6 +408,8 @@ var main = {
         alert(res.message);
         location.href = '/user/my-page';
       }
+    }).fail(function(res){
+        alert(res.responseText);
     })
   }
 };
